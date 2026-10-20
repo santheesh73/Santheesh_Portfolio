@@ -4,6 +4,7 @@ import Lenis from "lenis";
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/useReducedMotion";
+import { setLenis as setGlobalLenis } from "@/lib/lenis";
 
 type LenisCtx = {
   lenis: Lenis | null;
@@ -36,6 +37,9 @@ export function LenisProvider({ children }: { children: ReactNode }) {
     });
     lenisRef.current = instance;
     setLenis(instance);
+    setGlobalLenis(instance);
+    // The preloader may already be running; hold scroll until it finishes.
+    if (document.documentElement.classList.contains("is-booting")) instance.stop();
 
     instance.on("scroll", ScrollTrigger.update);
     const raf = (time: number) => instance.raf(time * 1000);
@@ -48,6 +52,7 @@ export function LenisProvider({ children }: { children: ReactNode }) {
     return () => {
       gsap.ticker.remove(raf);
       instance.destroy();
+      setGlobalLenis(null);
       lenisRef.current = null;
       setLenis(null);
     };

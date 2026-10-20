@@ -5,6 +5,7 @@ import { gsap, SplitText, useGSAP } from "@/lib/gsap";
 import { DUR, EASE, STAGGER } from "@/lib/motion";
 import { prefersReducedMotion } from "@/lib/useReducedMotion";
 import { cn } from "@/lib/cn";
+import { isRevealed, whenRevealed } from "@/lib/pageReveal";
 
 type Props = {
   as?: ElementType;
@@ -50,7 +51,9 @@ export function SplitReveal({
         onSplit(self) {
           el.dataset.split = "done";
           const targets = by === "words" ? self.words : self.lines;
-          return gsap.from(targets, {
+          const waitForPage = trigger === "mount" && !isRevealed();
+          const tween = gsap.from(targets, {
+            paused: waitForPage,
             yPercent: 110,
             duration: DUR.reveal,
             ease: EASE.structure,
@@ -59,6 +62,8 @@ export function SplitReveal({
             scrollTrigger:
               trigger === "scroll" ? { trigger: el, start: "top 88%", once: true } : undefined,
           });
+          if (waitForPage) whenRevealed(() => tween.play());
+          return tween;
         },
       });
       return () => split.revert();

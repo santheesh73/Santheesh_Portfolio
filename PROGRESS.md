@@ -56,3 +56,38 @@
 **Left**
 
 - Case-study design (P5). Role/years/details listed in TODO_CONTENT.md.
+
+## P2 — Shell & global motion (2026-10-20)
+
+**Built**
+
+- `Header` (wordmark, live IST clock, magnetic Menu toggle; flips to paper over `data-tone="ink"` sections).
+- `Menu`: full-screen ink overlay, clip-path open, items rise from 110% with 0.06s stagger, per-item
+  preview (MINCHAL capture for Work, text plates for the rest), focus trap, Escape, focus return,
+  closes on navigation, Lenis paused while open.
+- `Cursor`: dot + lagging ring, pointer:fine only, labels via `data-cursor`, cobalt via
+  `data-cursor-tone="signal"`, paper over ink sections. Native cursor hidden only while active.
+- `Magnetic` (≤12px), `ScrollProgress` (1px cobalt), `BlueprintGrid` (12 hairline columns draw in;
+  `G` toggles blueprint mode with column coordinates), `Grain` (SVG turbulence, 2.8% opacity).
+- `TransitionProvider`: capture-phase link interception, cobalt-then-ink curtain, destination name
+  scrambles in, `router.push`, lift after a 220 ms hold. 0.36 + 0.22 + 0.32 ≈ 0.9 s. Back/forward
+  skip the curtain and restore scroll; new routes start at top (or at `#hash`). Entrance animations
+  wait on `lib/pageReveal` so they play as the curtain lifts. `app/template.tsx` animates `[data-enter]`.
+- `Preloader`: server-rendered, first visit per session, boot log from the README with scramble,
+  000→100 counter with jittering digits that snap into a ruled grid, ink split reveal. ≤ 2.2 s,
+  finishes early with the load event. Hidden pre-paint for return visits / reduced motion.
+- Placeholder `/work`, `/about`, `/lab` shells for transition testing.
+
+**Verified**
+
+- lint, typecheck, build OK. Playwright `e2e/shell.spec.ts` (desktop + mobile): 7 passed —
+  preloader runs once per session; curtain fully covers (panel top reaches 0), navigates, lifts in
+  < 1.6 s wall-clock including test overhead; back restores scroll; menu focus trap + Escape +
+  focus return; `G` toggles blueprint. No console errors.
+- Screenshots `.review/p2/`: preloader count + split, menu, curtain frames, blueprint, desktop + mobile.
+
+**Bugs found by the tests and fixed**
+
+- Inline boot script imported a constant from a client module (rendered as a function stub).
+- Tailwind v4 `translate` utilities stacked with GSAP transforms on the curtain panels.
+- Header read the menu overlay as an ink section and went white on the home page.

@@ -69,7 +69,7 @@ const TYPE = [
 
 function SectionHead({ index, title }: { index: string; title: string }) {
   return (
-    <header className="border-ink col-span-full mb-10 flex items-end justify-between border-b pb-3">
+    <header className="col-span-full mb-10 flex items-end justify-between border-b border-ink pb-3">
       <h2 className="t-display-sm">{title}</h2>
       <Label>{index}</Label>
     </header>
@@ -85,12 +85,12 @@ export default function StyleguidePage() {
           as="p"
           text="Styleguide — v0 — signal → structure"
           trigger="mount"
-          className="text-ink-3-text col-span-full"
+          className="col-span-full text-ink-3-text"
         />
         <SplitReveal as="h1" trigger="mount" className="t-section col-span-full md:col-span-9">
           The system that draws the system.
         </SplitReveal>
-        <p className="text-ink-2 col-span-full max-w-[44ch] md:col-span-4 md:col-start-9 md:self-end">
+        <p className="col-span-full max-w-[44ch] text-ink-2 md:col-span-4 md:col-start-9 md:self-end">
           Tokens, type and motion primitives. Cobalt marks the model. Ink marks the engine.
           Everything else is paper.
         </p>
@@ -99,14 +99,14 @@ export default function StyleguidePage() {
       {/* Colour */}
       <section className="grid-12 gap-y-0 py-16" aria-labelledby="sg-colour">
         <SectionHead index="01 / colour" title="Colour" />
-        <ul className="border-rule col-span-full grid grid-cols-2 border-t border-l sm:grid-cols-3 lg:grid-cols-6">
+        <ul className="col-span-full grid grid-cols-2 border-t border-l border-rule sm:grid-cols-3 lg:grid-cols-6">
           {COLOURS.map((c) => (
-            <li key={c.token} className="border-rule border-r border-b">
-              <div className={`${c.cls} border-rule aspect-[4/3] border-b`} />
+            <li key={c.token} className="border-r border-b border-rule">
+              <div className={`${c.cls} aspect-[4/3] border-b border-rule`} />
               <div className="space-y-1 p-3">
-                <p className="text-ink font-mono text-xs">{c.token}</p>
-                <p className="text-ink-3-text font-mono text-xs">{c.hex}</p>
-                <p className="text-ink-2 text-sm">{c.role}</p>
+                <p className="font-mono text-xs text-ink">{c.token}</p>
+                <p className="font-mono text-xs text-ink-3-text">{c.hex}</p>
+                <p className="text-sm text-ink-2">{c.role}</p>
               </div>
             </li>
           ))}
@@ -116,12 +116,12 @@ export default function StyleguidePage() {
       {/* Type */}
       <section className="grid-12 py-16" aria-labelledby="sg-type">
         <SectionHead index="02 / type" title="Type" />
-        <div className="divide-rule border-rule col-span-full divide-y border-y">
+        <div className="col-span-full divide-y divide-rule border-y border-rule">
           {TYPE.map((t) => (
             <div key={t.name} className="grid grid-cols-12 gap-x-4 gap-y-3 py-8">
               <div className="col-span-12 space-y-1 md:col-span-3">
                 <Label className="text-ink">{t.name}</Label>
-                <p className="text-ink-3-text font-mono text-xs">{t.spec}</p>
+                <p className="font-mono text-xs text-ink-3-text">{t.spec}</p>
               </div>
               <p
                 className={`col-span-12 md:col-span-9 ${t.cls} ${t.cls === "" ? "measure" : ""} overflow-hidden`}
@@ -131,7 +131,7 @@ export default function StyleguidePage() {
             </div>
           ))}
         </div>
-        <p className="text-ink-3-text col-span-full mt-6 font-mono text-xs">
+        <p className="col-span-full mt-6 font-mono text-xs text-ink-3-text">
           Display: Bricolage Grotesque (fallback for Clash Display) · Body: Geist (fallback for
           General Sans) · Mono: JetBrains Mono
         </p>
@@ -167,16 +167,16 @@ export default function StyleguidePage() {
       {/* Motion */}
       <section className="grid-12 py-16">
         <SectionHead index="04 / motion" title="Motion primitives" />
-        <div className="border-rule bg-rule col-span-full grid gap-px border md:grid-cols-2">
-          <div className="bg-paper space-y-6 p-6 md:p-10">
+        <div className="col-span-full grid gap-px border border-rule bg-rule md:grid-cols-2">
+          <div className="space-y-6 bg-paper p-6 md:p-10">
             <Label>SplitReveal · lines from 110% · 0.06s stagger · expo.out</Label>
             <ReplayDemo kind="split" />
           </div>
-          <div className="bg-paper space-y-6 p-6 md:p-10">
+          <div className="space-y-6 bg-paper p-6 md:p-10">
             <Label>Scramble · mono labels only · noise → order</Label>
             <ReplayDemo kind="scramble" />
           </div>
-          <div className="bg-paper space-y-6 p-6 md:p-10">
+          <div className="space-y-6 bg-paper p-6 md:p-10">
             <Label>SnapIn · offset + rotate + blur → exact grid</Label>
             <div className="grid grid-cols-4 gap-2">
               {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
@@ -188,7 +188,7 @@ export default function StyleguidePage() {
               ))}
             </div>
           </div>
-          <div className="bg-paper space-y-6 p-6 md:p-10">
+          <div className="space-y-6 bg-paper p-6 md:p-10">
             <Label>Eases</Label>
             <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 font-mono text-sm">
               <dt className="text-signal">signal</dt>

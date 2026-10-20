@@ -42,10 +42,10 @@ export default async function CaseStudy({ params }: { params: Promise<{ slug: st
       ) : null,
     Guarantees: () =>
       project.guarantees.length ? (
-        <ol className="measure divide-rule border-rule my-8 divide-y border-y">
+        <ol className="measure my-8 divide-y divide-rule border-y border-rule">
           {project.guarantees.map((g, i) => (
             <li key={g} className="grid grid-cols-[3rem_1fr] py-4">
-              <span className="t-label text-ink-3-text pt-1">
+              <span className="t-label pt-1 text-ink-3-text">
                 G{String(i + 1).padStart(2, "0")}
               </span>
               <span>{g}</span>
@@ -60,7 +60,7 @@ export default async function CaseStudy({ params }: { params: Promise<{ slug: st
       <header className="col-span-full mb-12">
         <p className="t-label text-ink-3-text">Case study</p>
         <h1 className="t-section mt-4">{project.title}</h1>
-        <p className="t-lede text-ink-2 mt-6 max-w-[40ch]">{project.pitch}</p>
+        <p className="t-lede mt-6 max-w-[40ch] text-ink-2">{project.pitch}</p>
       </header>
       <div className="col-span-full lg:col-span-10 lg:col-start-2">
         <Body components={components} />

@@ -165,7 +165,7 @@ export function ArchitectureDiagram({
           })}
         </svg>
       </div>
-      <figcaption className="t-label text-ink-3-text mt-4 flex flex-wrap gap-x-6 gap-y-1">
+      <figcaption className="t-label mt-4 flex flex-wrap gap-x-6 gap-y-1 text-ink-3-text">
         <span>FIG. — {title} architecture</span>
         <span className="text-signal">▪ model</span>
         <span className="text-ink">▪ deterministic</span>

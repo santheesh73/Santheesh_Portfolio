@@ -29,7 +29,7 @@ export function ReplayDemo({ kind }: { kind: "split" | "scramble" }) {
       <button
         type="button"
         onClick={() => setKey((k) => k + 1)}
-        className="text-ink-2 hover:text-signal font-mono text-xs tracking-[0.12em] uppercase underline underline-offset-4"
+        className="font-mono text-xs tracking-[0.12em] text-ink-2 uppercase underline underline-offset-4 hover:text-signal"
       >
         Replay ↺
       </button>

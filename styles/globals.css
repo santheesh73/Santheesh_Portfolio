@@ -230,3 +230,61 @@ html.js-motion [data-split=""] {
     visibility: visible;
   }
 }
+
+/* Grain shift: 8 discrete jumps, reads as film noise rather than motion. */
+.grain {
+  animation: grain-shift 0.9s steps(8) infinite;
+}
+@keyframes grain-shift {
+  0% {
+    transform: translate(0, 0);
+  }
+  12% {
+    transform: translate(-6%, 4%);
+  }
+  25% {
+    transform: translate(5%, -7%);
+  }
+  37% {
+    transform: translate(-3%, 9%);
+  }
+  50% {
+    transform: translate(8%, 2%);
+  }
+  62% {
+    transform: translate(-9%, -4%);
+  }
+  75% {
+    transform: translate(3%, 7%);
+  }
+  87% {
+    transform: translate(-5%, -8%);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+/* Custom cursor: hide the native one only while ours is active. Text fields keep theirs. */
+html.has-cursor,
+html.has-cursor a,
+html.has-cursor button,
+html.has-cursor [role="button"],
+html.has-cursor label {
+  cursor: none;
+}
+html.has-cursor input,
+html.has-cursor textarea,
+html.has-cursor select {
+  cursor: auto;
+}
+
+/* First visit only: the preloader is server-rendered and hidden before paint if already booted. */
+html.booted [data-preloader],
+html:not(.js-motion) [data-preloader] {
+  display: none;
+}
+
+html.is-booting {
+  overflow: hidden;
+}

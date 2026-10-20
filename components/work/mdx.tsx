@@ -11,21 +11,21 @@ export const caseStudyComponents: MDXComponents = {
       {children}
     </h2>
   ),
-  p: ({ children }) => <p className="measure text-ink-2 mb-5">{children}</p>,
-  ul: ({ children }) => <ul className="measure text-ink-2 mb-6 space-y-2">{children}</ul>,
+  p: ({ children }) => <p className="measure mb-5 text-ink-2">{children}</p>,
+  ul: ({ children }) => <ul className="measure mb-6 space-y-2 text-ink-2">{children}</ul>,
   li: ({ children }) => (
-    <li className="before:bg-ink relative pl-6 before:absolute before:top-[0.7em] before:left-0 before:h-px before:w-3">
+    <li className="relative pl-6 before:absolute before:top-[0.7em] before:left-0 before:h-px before:w-3 before:bg-ink">
       {children}
     </li>
   ),
-  strong: ({ children }) => <strong className="text-ink font-medium">{children}</strong>,
+  strong: ({ children }) => <strong className="font-medium text-ink">{children}</strong>,
   code: ({ children }) => (
-    <code className="bg-paper-2 text-ink rounded-xs px-1.5 py-0.5 font-mono text-[0.88em]">
+    <code className="rounded-xs bg-paper-2 px-1.5 py-0.5 font-mono text-[0.88em] text-ink">
       {children}
     </code>
   ),
   blockquote: ({ children }) => (
-    <blockquote className="t-lede border-signal text-ink my-10 max-w-[30ch] border-l-2 pl-6">
+    <blockquote className="t-lede my-10 max-w-[30ch] border-l-2 border-signal pl-6 text-ink">
       {children}
     </blockquote>
   ),

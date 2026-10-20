@@ -5,6 +5,7 @@ import { gsap, useGSAP } from "@/lib/gsap";
 import { SCRAMBLE_GLYPHS } from "@/lib/motion";
 import { prefersReducedMotion } from "@/lib/useReducedMotion";
 import { cn } from "@/lib/cn";
+import { whenRevealed } from "@/lib/pageReveal";
 
 type Props = {
   text: string;
@@ -43,7 +44,11 @@ export function Scramble({
         });
 
       if (trigger === "mount") {
-        play();
+        gsap.set(target, { opacity: 0 });
+        return whenRevealed(() => {
+          gsap.set(target, { opacity: 1 });
+          play();
+        });
       } else if (trigger === "scroll") {
         gsap.set(target, { opacity: 0 });
         gsap.to(target, {
