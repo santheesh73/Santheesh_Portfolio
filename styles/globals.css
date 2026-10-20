@@ -54,6 +54,8 @@
   --text-lede: clamp(1.25rem, 1.6vw, 1.625rem);
   --text-body: clamp(1.0625rem, 0.3vw + 1rem, 1.125rem);
   --text-label: 0.75rem;
+  --text-chip: 0.6875rem;
+  --text-code: 0.88em;
 
   --ease-signal: cubic-bezier(0.65, 0, 0.35, 1);
   --ease-structure: cubic-bezier(0.16, 1, 0.3, 1);

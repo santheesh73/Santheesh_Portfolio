@@ -68,7 +68,7 @@ export function NotFoundField() {
     if (locked) return;
     const go = () => compile();
     const onKey = (e: KeyboardEvent) => {
-      if (["ArrowDown", "PageDown", " ", "Enter"].includes(e.key) && !(e.target as Element)?.closest?.("a,button")) go();
+      if (["ArrowDown", "PageDown"].includes(e.key)) go();
     };
     window.addEventListener("wheel", go, { passive: true, once: true });
     window.addEventListener("touchmove", go, { passive: true, once: true });
@@ -83,16 +83,18 @@ export function NotFoundField() {
 
   return (
     <section aria-labelledby="nf-title" className="relative h-[100svh] min-h-[560px] overflow-hidden" data-cursor-tone="signal">
-      {/* pointer shortcut only; keyboard users get the keys above and the link below */}
-      <div
-        aria-hidden="true"
-        data-cursor={locked ? "Home" : "Compile"}
-        onClick={() => (locked ? navigate("/", "Index") : compile())}
-        className="absolute inset-0 cursor-pointer"
-      >
+      <div aria-hidden="true" className="absolute inset-0">
         {mode === "webgl" && <SignalField lines={lines} offset={-0.02} />}
         {mode === "static" && <SignalStatic lines={lines} offset={-0.02} />}
       </div>
+      {/* the whole field is one control: compile, then go home */}
+      <button
+        type="button"
+        aria-label={locked ? "Go to the index" : "Compile the field into a link home"}
+        data-cursor={locked ? "Home" : "Compile"}
+        onClick={() => (locked ? navigate("/", "Index") : compile())}
+        className="absolute inset-0 cursor-pointer focus-visible:outline-offset-[-8px]"
+      />
 
       <div className="grid-12 pointer-events-none absolute inset-x-0 bottom-0 items-end gap-y-6 pb-10">
         <div className="col-span-full flex flex-col gap-4 md:col-span-7">

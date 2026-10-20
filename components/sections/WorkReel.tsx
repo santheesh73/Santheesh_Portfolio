@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/useReducedMotion";
+import { revealOnFocus } from "@/lib/revealOnFocus";
 import type { Project } from "@/content/schema";
 import { ProjectPlate } from "@/components/work/ProjectPlate";
 import { SectionLabel } from "@/components/ui/SectionLabel";
@@ -31,7 +32,7 @@ export function WorkReel({
       mm.add("(min-width: 768px)", () => {
         const track = el.querySelector<HTMLElement>("[data-track]")!;
         const distance = () => track.scrollWidth - window.innerWidth;
-        gsap.to(track, {
+        const tween = gsap.to(track, {
           x: () => -distance(),
           ease: "none",
           scrollTrigger: {
@@ -48,6 +49,7 @@ export function WorkReel({
         gsap.utils.toArray<HTMLElement>("[data-plate]", el).forEach((p, i) => {
           gsap.from(p, { rotate: i % 2 ? 1.5 : -1.5, y: 30, ease: "expo.out", duration: 1, scrollTrigger: { trigger: el, start: "top 70%", once: true } });
         });
+        return revealOnFocus(el, track, tween.scrollTrigger!, distance);
       });
       return () => mm.revert();
     },
@@ -55,9 +57,9 @@ export function WorkReel({
   );
 
   return (
-    <section ref={root} aria-labelledby="work-title" className="relative overflow-hidden bg-paper py-24 md:flex md:h-[100svh] md:items-center md:py-0">
-      <div data-track className="flex flex-col gap-24 px-[var(--gutter)] md:flex-row md:items-center md:gap-[6vw] md:pr-[10vw]">
-        <header className="flex shrink-0 flex-col gap-6 md:w-[26vw]">
+    <section ref={root} aria-labelledby="work-title" className="relative overflow-hidden bg-paper py-24 md:flex md:h-[100svh] md:items-center md:py-0 motion-reduce:md:block motion-reduce:md:h-auto motion-reduce:md:py-32">
+      <div data-track className="flex flex-col gap-24 px-[var(--gutter)] md:flex-row md:items-center md:gap-[6vw] md:pr-[10vw] motion-reduce:md:grid motion-reduce:md:grid-cols-2 motion-reduce:md:items-start motion-reduce:md:gap-x-[var(--gutter)] motion-reduce:md:gap-y-24 motion-reduce:md:pr-[var(--gutter)]">
+        <header className="flex shrink-0 flex-col gap-6 md:w-[26vw] motion-reduce:md:w-auto">
           <SectionLabel index={index} total={total} text="Selected work" />
           <SplitReveal as="h2" id="work-title" className="t-section">
             Work.
@@ -70,7 +72,7 @@ export function WorkReel({
           </Link>
         </header>
         {projects.map((p, i) => (
-          <div key={p.slug} data-plate className="shrink-0 md:w-[min(56vw,62vh*1.6)]">
+          <div key={p.slug} data-plate className="shrink-0 md:w-[min(56vw,62vh*1.6)] motion-reduce:md:w-auto">
             <ProjectPlate project={p} index={i} sizes="(min-width: 768px) 56vw, 100vw" />
           </div>
         ))}

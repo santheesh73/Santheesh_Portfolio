@@ -24,7 +24,7 @@ export function Chip({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 rounded-full border bg-sheet/70 px-3 py-1 font-mono text-[0.6875rem] font-medium tracking-[0.1em] uppercase",
+        "inline-flex items-center gap-2 rounded-full border bg-sheet/70 px-3 py-1 font-mono text-chip font-medium tracking-[0.1em] uppercase",
         s.ring,
         className,
       )}

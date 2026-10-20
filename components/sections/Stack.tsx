@@ -96,7 +96,10 @@ export function Stack({
                   <ul
                     key={copy}
                     aria-hidden={copy === 1 || undefined}
-                    className={cn("flex shrink-0 items-baseline gap-[3vw] pr-[3vw]", copy === 1 && "motion-reduce:hidden")}
+                    className={cn(
+                      "flex shrink-0 items-baseline gap-[3vw] pr-[3vw] motion-reduce:shrink motion-reduce:flex-wrap motion-reduce:gap-y-2 motion-reduce:px-[var(--gutter)]",
+                      copy === 1 && "motion-reduce:hidden",
+                    )}
                   >
                     {layer.tools.map((t) => {
                       const on = tool === t;

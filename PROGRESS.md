@@ -195,3 +195,34 @@
 **Left**
 - `/lab` has one lab project, so the grid leans on Frontend Craft internals; more lab entries need
   real projects from Santheesh.
+
+## P6 — Polish
+
+**Changed**
+- Reduced motion on desktop: the Pipeline uses its stacked sequence, the Work reel becomes a
+  two-column grid, and the Stack marquees wrap instead of clipping, so nothing sits off-screen in a
+  scene that no longer scrolls sideways.
+- Keyboard reach in the pinned horizontal scenes (`lib/revealOnFocus.ts`): tabbing to a plate or a
+  project link inside a moving track scrolls the page to the point where it is on screen. Keyboard
+  focus only (`:focus-visible`), so a mouse press never moves the target out from under the click.
+- 404: the field is now one real `<button>` (compile, then go home) over an `aria-hidden` canvas.
+- `/about` overflowed at 768px (long email in a narrow column): facts grid reflows and wraps.
+- Tokens: `--text-chip`, `--text-code` replace arbitrary sizes (flagged by craft lint).
+- `scripts/audit-layout.ts` (`pnpm audit:layout`): no horizontal scroll at 360/390/768/1024/1440/
+  1920 on every route, and no laid-out-but-invisible text under reduced motion.
+
+**Copy**
+- Checked all content and components against the voice rules: no banned words, no invented facts;
+  roles show only where a README sources them, unconfirmed solo builds show no team line.
+
+**Verified**
+- lint, typecheck, build; Playwright 26 passed (adds: keyboard focus reveals an off-screen reel
+  plate; reduced motion lays out every Pipeline stage and the full reel).
+- `pnpm audit:layout`: clean. `craft lint` (Frontend Craft CLI, run from a local clone): 0 blocking,
+  2 warnings (an arbitrary `pb-[max(2rem,5svh)]` in the hero; a heuristic about canvas text, which
+  the hero and 404 both mirror in DOM headings), 3 info (no `.craft/` contract, no spacing scale).
+- Screenshots `.review/p6/` (reduced motion: home, MINCHAL case, lab; 360px: home, about, work).
+
+**Timing**
+- Reveals 0.6–1.2s, micro-interactions 0.18–0.4s, scrubs 0.3–0.6s smoothing, one `signal` in/out
+  ease and `expo.out` for snaps; the 2.4s hero arrival is the one deliberate long move.

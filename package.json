@@ -14,7 +14,8 @@
     "e2e": "playwright test",
     "shots": "tsx scripts/screenshots.ts",
     "media": "tsx scripts/capture-media.ts",
-    "frames": "tsx scripts/frames.ts"
+    "frames": "tsx scripts/frames.ts",
+    "audit:layout": "tsx scripts/audit-layout.ts"
   },
   "dependencies": {
     "@gsap/react": "2.1.2",

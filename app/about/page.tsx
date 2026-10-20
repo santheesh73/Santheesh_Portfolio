@@ -33,7 +33,7 @@ export default function Page() {
       </header>
 
       <section aria-label="Bio" className="grid-12 gap-y-12 border-t border-ink pt-10">
-        <div className="col-span-full flex flex-col gap-6 md:col-span-7">
+        <div className="col-span-full flex flex-col gap-6 lg:col-span-7">
           {profile.bio.map((b, i) => (
             <SplitReveal
               key={i}
@@ -49,11 +49,11 @@ export default function Page() {
             </ButtonLink>
           )}
         </div>
-        <dl className="col-span-full grid content-start gap-y-5 md:col-span-4 md:col-start-9">
+        <dl className="col-span-full grid content-start gap-y-5 md:grid-cols-2 md:gap-x-[var(--gutter)] lg:col-span-4 lg:col-start-9 lg:grid-cols-1">
           {facts.map((f) => (
-            <div key={f.k} className="grid grid-cols-[6.5rem_1fr] items-baseline gap-x-4 border-b border-rule pb-4">
+            <div key={f.k} className="grid grid-cols-[6.5rem_minmax(0,1fr)] items-baseline gap-x-4 border-b border-rule pb-4">
               <dt className="t-label text-ink-3-text">{f.k}</dt>
-              <dd className="break-words text-ink">
+              <dd className="text-ink [overflow-wrap:anywhere]">
                 {f.href ? (
                   <a
                     href={f.href}
@@ -70,7 +70,7 @@ export default function Page() {
               </dd>
             </div>
           ))}
-          <div className="grid grid-cols-[6.5rem_1fr] items-baseline gap-x-4 border-b border-rule pb-4">
+          <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] items-baseline gap-x-4 border-b border-rule pb-4">
             <dt className="t-label text-ink-3-text">Local time</dt>
             <dd>
               <Clock className="text-ink" />

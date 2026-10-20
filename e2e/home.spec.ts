@@ -33,3 +33,29 @@ test("a work plate flips into its case study", async ({ page }, info) => {
   await expect(page.locator('[data-flip-target="orion"]')).toBeVisible();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Orion");
 });
+
+test("keyboard focus brings an off-screen reel plate into view", async ({ page }, info) => {
+  test.skip(info.project.name === "mobile", "pinned reel is desktop only");
+  await page.goto("/", { waitUntil: "networkidle" });
+  const last = page.locator('a[data-flip-id="prysm"]');
+  await last.focus();
+  await expect
+    .poll(async () => {
+      const b = await last.boundingBox();
+      return b ? b.x >= -1 && b.x + b.width / 2 < 1440 && b.y < 900 && b.y + b.height > 0 : false;
+    })
+    .toBe(true);
+});
+
+test("reduced motion lays the horizontal scenes out in full", async ({ browser }, info) => {
+  test.skip(info.project.name === "mobile", "desktop layout");
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
+  const page = await ctx.newPage();
+  await page.goto("/", { waitUntil: "networkidle" });
+  for (const name of ["Read.", "Validate.", "Decide.", "Explain."]) {
+    await expect(page.locator("ol h3, ol li").filter({ hasText: name }).first()).toBeVisible();
+  }
+  const right = await page.locator('a[data-flip-id="prysm"]').evaluate((e) => e.getBoundingClientRect().right);
+  expect(right).toBeLessThanOrEqual(1440);
+  await ctx.close();
+});

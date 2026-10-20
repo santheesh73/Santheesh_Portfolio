@@ -20,7 +20,7 @@ export const caseStudyComponents: MDXComponents = {
   ),
   strong: ({ children }) => <strong className="font-medium text-ink">{children}</strong>,
   code: ({ children }) => (
-    <code className="rounded-xs bg-paper-2 px-1.5 py-0.5 font-mono text-[0.88em] text-ink">
+    <code className="rounded-xs bg-paper-2 px-1.5 py-0.5 font-mono text-code text-ink">
       {children}
     </code>
   ),

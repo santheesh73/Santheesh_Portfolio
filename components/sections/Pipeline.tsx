@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { EASE, SIGNAL_OFFSET } from "@/lib/motion";
 import { prefersReducedMotion } from "@/lib/useReducedMotion";
+import { revealOnFocus } from "@/lib/revealOnFocus";
 import { DocumentGlyph } from "@/components/pipeline/DocumentGlyph";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { SplitReveal } from "@/components/motion/SplitReveal";
@@ -146,6 +147,7 @@ export function Pipeline({
         tl.to(track, { x: () => -distance(), duration: 1 }, 0);
         tl.fromTo(q("[data-wire]"), { scaleX: 0 }, { scaleX: 1, duration: 1 }, 0);
         tl.fromTo(q("[data-progress]"), { scaleX: 0 }, { scaleX: 1, duration: 1 }, 0);
+        return revealOnFocus(el, track, tl.scrollTrigger!, distance);
       });
       return () => mm.revert();
     },
@@ -156,10 +158,10 @@ export function Pipeline({
     <section
       ref={root}
       aria-labelledby="pipeline-title"
-      className="relative overflow-hidden bg-paper-2 md:h-[100svh]"
+      className="relative overflow-hidden bg-paper-2 md:h-[100svh] motion-reduce:md:h-auto"
     >
       {/* top rule + section head */}
-      <div className="grid-12 relative z-10 gap-y-4 pt-[calc(var(--header-h)+2rem)] md:absolute md:inset-x-0 md:top-0">
+      <div className="grid-12 relative z-10 gap-y-4 pt-[calc(var(--header-h)+2rem)] md:absolute md:inset-x-0 md:top-0 motion-reduce:md:static">
         <SectionLabel
           index={index}
           total={total}
@@ -180,7 +182,7 @@ export function Pipeline({
       </div>
 
       {/* Desktop: pinned horizontal scene */}
-      <div data-viewport className="absolute inset-0 hidden md:block">
+      <div data-viewport className="absolute inset-0 hidden md:block motion-reduce:md:hidden">
         {/* the wire the document travels along */}
         <div className="absolute inset-x-0 top-[80%] h-px bg-rule" aria-hidden="true" />
         <div
@@ -245,7 +247,7 @@ export function Pipeline({
       </div>
 
       {/* Mobile: vertical sequence */}
-      <ol className="grid-12 gap-y-16 py-16 md:hidden">
+      <ol className="grid-12 gap-y-16 py-16 md:hidden motion-reduce:md:grid">
         {stages.map((s, i) => (
           <li key={s.id} className="col-span-full grid grid-cols-[88px_1fr] gap-5">
             <div className="relative">
