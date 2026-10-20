@@ -44,10 +44,13 @@ export function ArchitectureDiagram({
   architecture,
   title,
   className,
+  compact = false,
 }: {
   architecture: Architecture;
   title: string;
   className?: string;
+  /** Plate use: no caption, no minimum width, decorative. */
+  compact?: boolean;
 }) {
   const { nodes, edges } = architecture;
   const maxCol = Math.max(...nodes.map((n) => n.col));
@@ -60,12 +63,13 @@ export function ArchitectureDiagram({
 
   return (
     <figure className={cn("not-prose", className)}>
-      <div className="overflow-x-auto overscroll-x-contain">
+      <div className={compact ? "" : "overflow-x-auto overscroll-x-contain"}>
         <svg
           viewBox={`0 ${top} ${vbW} ${vbH}`}
-          className="block h-auto w-full min-w-[640px]"
-          role="img"
-          aria-label={`${title} architecture: ${nodes.map((n) => n.label).join(", ")}`}
+          className={cn("block h-auto w-full", !compact && "min-w-[640px]")}
+          role={compact ? undefined : "img"}
+          aria-hidden={compact || undefined}
+          aria-label={compact ? undefined : `${title} architecture: ${nodes.map((n) => n.label).join(", ")}`}
         >
           <defs>
             <marker
@@ -90,7 +94,7 @@ export function ArchitectureDiagram({
                   key={`${from}-${to}`}
                   data-draw="edge"
                   d={edgePath(pos(a.col, a.row), pos(b.col, b.row))}
-                  markerEnd="url(#arr)"
+                  markerEnd={`url(#arr-${title.replace(/\W/g, "")}${compact ? "-c" : ""})`}
                   stroke={isModel ? "var(--signal)" : "var(--ink)"}
                   strokeDasharray={isModel ? "3 3" : undefined}
                 />
@@ -165,11 +169,13 @@ export function ArchitectureDiagram({
           })}
         </svg>
       </div>
+      {!compact && (
       <figcaption className="t-label mt-4 flex flex-wrap gap-x-6 gap-y-1 text-ink-3-text">
         <span>FIG. — {title} architecture</span>
         <span className="text-signal">▪ model</span>
         <span className="text-ink">▪ deterministic</span>
       </figcaption>
+      )}
     </figure>
   );
 }

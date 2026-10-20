@@ -2,14 +2,16 @@ import { describe, expect, it } from "vitest";
 import { fitFont } from "./sampleText";
 
 // Canvas-free check of the font fitting maths with a fake 2D context.
-const fakeCtx = (charW: number) =>
-  ({
+const fakeCtx = (charW: number) => {
+  const ctx = {
     font: "",
     measureText(t: string) {
-      const size = Number(/(\d+)px/.exec(this.font)?.[1] ?? 0);
+      const size = Number(/(\d+)px/.exec(ctx.font)?.[1] ?? 0);
       return { width: t.length * charW * (size / 100) };
     },
-  }) as unknown as CanvasRenderingContext2D;
+  };
+  return ctx as unknown as CanvasRenderingContext2D;
+};
 
 describe("fitFont", () => {
   it("fits the widest line to the max width", () => {

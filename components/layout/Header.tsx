@@ -22,13 +22,15 @@ export function Header({ name, items }: { name: string; items: MenuItem[] }) {
   useGSAP(
     () => {
       setDark(false);
-      const sections = document.querySelectorAll<HTMLElement>("main [data-tone='ink']");
+      const sections = document.querySelectorAll<HTMLElement>("main [data-tone='ink'], footer[data-tone='ink']");
       const triggers = [...sections].map((s) =>
         ScrollTrigger.create({
           trigger: s,
           start: "top top+=32",
           end: "bottom top+=32",
           onToggle: (self) => setDark(self.isActive),
+          // header triggers are created before the page pins; measure after them
+          refreshPriority: -1,
         }),
       );
       return () => triggers.forEach((t) => t.kill());

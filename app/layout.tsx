@@ -11,6 +11,7 @@ import { ScrollProgress } from "@/components/layout/ScrollProgress";
 import { BlueprintGrid } from "@/components/layout/BlueprintGrid";
 import { Grain } from "@/components/layout/Grain";
 import { Preloader } from "@/components/sections/Preloader";
+import { Contact } from "@/components/sections/Contact";
 import { BOOT_KEY } from "@/lib/boot";
 import { profile } from "@/content/profile";
 import { workProjects, labProjects } from "@/content/projects";
@@ -79,9 +80,18 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <BlueprintGrid />
             <ScrollProgress />
             <Header name={profile.name} items={MENU} />
-            <main id="main" className="relative z-[2]">
+            <main id="main" tabIndex={-1} className="relative z-[2] outline-none">
               {children}
             </main>
+            <Contact
+              heading={profile.taglines.contact}
+              email={profile.email}
+              github={profile.links.github}
+              linkedin={profile.links.linkedin}
+              motto={profile.taglines.motto}
+              location={`${profile.location.city}, IN`}
+              homeIndex={7}
+            />
             <Cursor />
             <Grain />
             <Preloader log={profile.bootLog} />

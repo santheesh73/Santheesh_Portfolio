@@ -2,14 +2,17 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useCallback, useContext, useEffect, useRef, type ReactNode } from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { Flip, gsap, ScrollTrigger } from "@/lib/gsap";
 import { EASE, SCRAMBLE_GLYPHS } from "@/lib/motion";
 import { markHidden, markRevealed } from "@/lib/pageReveal";
 import { prefersReducedMotion } from "@/lib/useReducedMotion";
 import { useLenis } from "./LenisProvider";
 
-type Ctx = { navigate: (href: string, label?: string) => void };
-const TransitionCtx = createContext<Ctx>({ navigate: () => {} });
+type Ctx = {
+  navigate: (href: string, label?: string) => void;
+  navigateFlip: (href: string, source: HTMLElement, id: string) => void;
+};
+const TransitionCtx = createContext<Ctx>({ navigate: () => {}, navigateFlip: () => {} });
 export const useTransitionRouter = () => useContext(TransitionCtx);
 
 const COVER = 0.3;
@@ -50,6 +53,8 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
   const firstRender = useRef(true);
   const safety = useRef<number | null>(null);
   const coveredAt = useRef(0);
+  const backdrop = useRef<HTMLDivElement>(null);
+  const flip = useRef<{ id: string; clone: HTMLElement; source: HTMLElement } | null>(null);
 
   const scrollToY = useCallback((y: number) => {
     const l = lenisRef.current;
@@ -131,6 +136,83 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
     [router, lift],
   );
 
+  /**
+   * Shared-element transition into a case study (GSAP Flip). The clicked plate's
+   * media is cloned into a fixed layer above a paper backdrop, the route
+   * changes underneath, then Flip.fit moves the clone onto the case hero's
+   * `[data-flip-target=id]` and hands over. A persistent overlay was chosen over
+   * the View Transitions API: in Next 15 that needs an experimental flag and
+   * React canary, while this works in every browser today.
+   */
+  const navigateFlip = useCallback(
+    (href: string, source: HTMLElement, id: string) => {
+      const target = new URL(href, location.href);
+      if (prefersReducedMotion() || !backdrop.current || target.pathname === current.current) {
+        navigate(href, id);
+        return;
+      }
+      scrolls.current.set(current.current, window.scrollY);
+      const rect = source.getBoundingClientRect();
+      const clone = source.cloneNode(true) as HTMLElement;
+      clone.querySelectorAll("video").forEach((v) => v.removeAttribute("autoplay"));
+      Object.assign(clone.style, {
+        position: "fixed",
+        left: `${rect.left}px`,
+        top: `${rect.top}px`,
+        width: `${rect.width}px`,
+        height: `${rect.height}px`,
+        margin: "0",
+        zIndex: "109",
+        filter: "none",
+        transform: "none",
+      });
+      document.body.appendChild(clone);
+      source.style.visibility = "hidden";
+      flip.current = { id, clone, source };
+      pending.current = target.pathname + target.search;
+      markHidden();
+      lenisRef.current?.stop();
+      gsap.set(backdrop.current, { visibility: "visible", pointerEvents: "auto" });
+      gsap.fromTo(backdrop.current, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35, ease: EASE.signal });
+      gsap.to(clone, {
+        scale: 1.03,
+        duration: 0.35,
+        ease: EASE.signal,
+        onComplete: () => {
+          router.push(pending.current!, { scroll: false });
+          safety.current = window.setTimeout(() => landFlip(), 2500);
+        },
+      });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [router, navigate],
+  );
+
+  const landFlip = useCallback(() => {
+    const f = flip.current;
+    if (!f) return;
+    if (safety.current) window.clearTimeout(safety.current);
+    flip.current = null;
+    pending.current = null;
+    const target = document.querySelector<HTMLElement>(`[data-flip-target="${f.id}"]`);
+    const finish = () => {
+      if (target) target.style.visibility = "";
+      f.clone.remove();
+      gsap.set(backdrop.current, { visibility: "hidden", pointerEvents: "none" });
+      lenisRef.current?.start();
+      ScrollTrigger.refresh();
+    };
+    markRevealed();
+    gsap.to(backdrop.current, { autoAlpha: 0, duration: 0.5, delay: 0.2, ease: EASE.signal });
+    if (!target) {
+      gsap.to(f.clone, { autoAlpha: 0, duration: 0.3, onComplete: finish });
+      return;
+    }
+    target.style.visibility = "hidden";
+    gsap.set(f.clone, { scale: 1 });
+    Flip.fit(f.clone, target, { duration: 0.8, ease: EASE.structure, scale: false, onComplete: finish });
+  }, []);
+
   // Intercept internal link clicks before Next's <Link> handles them.
   useEffect(() => {
     history.scrollRestoration = "manual";
@@ -140,6 +222,15 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
       const a = (e.target as Element | null)?.closest?.("a");
       if (!a || !a.href || a.target === "_blank" || a.hasAttribute("download")) return;
       if (a.dataset.transition === "none") return;
+      if (a.dataset.transition === "flip") {
+        const source = a.querySelector<HTMLElement>("[data-flip-source]");
+        if (source && a.dataset.flipId) {
+          e.preventDefault();
+          e.stopPropagation();
+          navigateFlip(a.href, source, a.dataset.flipId);
+          return;
+        }
+      }
       const url = new URL(a.href);
       if (url.origin !== location.origin) return;
       if (url.pathname === location.pathname && url.hash) return; // in-page anchor
@@ -156,7 +247,7 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
       document.removeEventListener("click", onClick, true);
       window.removeEventListener("popstate", onPop);
     };
-  }, [navigate]);
+  }, [navigate, navigateFlip]);
 
   // Route committed.
   useEffect(() => {
@@ -168,6 +259,11 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
     }
     if (prev === pathname) return;
 
+    if (flip.current) {
+      scrollToY(0);
+      requestAnimationFrame(() => requestAnimationFrame(landFlip));
+      return;
+    }
     if (pending.current) {
       const hash = new URL(pending.current, location.href).hash;
       pending.current = null;
@@ -187,11 +283,17 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
       ScrollTrigger.refresh();
       scrollToY(y);
     });
-  }, [pathname, lift, scrollToY]);
+  }, [pathname, lift, scrollToY, landFlip]);
 
   return (
-    <TransitionCtx.Provider value={{ navigate }}>
+    <TransitionCtx.Provider value={{ navigate, navigateFlip }}>
       {children}
+      <div
+        ref={backdrop}
+        aria-hidden="true"
+        className="invisible fixed inset-0 z-[108] bg-paper"
+        style={{ pointerEvents: "none" }}
+      />
       <div
         ref={root}
         aria-hidden="true"

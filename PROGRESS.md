@@ -120,3 +120,40 @@
 - Initial JS on `/` (modern browsers, gzip, excluding the nomodule polyfill): ≈ 197 KB — over the
   180 KB budget. React/Next runtime ≈ 101 KB; GSAP + plugins chunk ≈ 45 KB. The WebGL chunks
   (three + R3F, ≈ 241 KB gzip) load lazily and are excluded.
+
+## P4 — Home narrative
+
+**Built**
+- `Manifesto` (02/07): pinned; the philosophy sentence reads word by word from ink-3 to ink on scroll,
+  cobalt underlines draw under "component" and "reliable".
+- `Pipeline` (03/07): pinned horizontal sequence Read → Validate → Decide → Explain, each stage tied
+  to real project facts (`content/pipeline.ts`). One document glyph sits on the wire and swaps form
+  per stage (bill → fields → rules → tree) with a signal→structure transition; stages scroll in a
+  clipped window to its right so text never passes under it. Mobile: a plain ordered list.
+- `WorkReel` (04/07): pinned horizontal gallery of the five featured plates. `ProjectPlate`: 16:10
+  media (looping video only in view / screenshot / blueprint spec plate with the real architecture),
+  RGB-split pulse and zoom on hover, rolling title letters, mono metadata with honest status chips
+  and team roles. Click → GSAP `Flip` shared-element transition onto `[data-flip-target]` in the
+  case study (chosen over the View Transitions API, which is experimental in Next 15).
+- `Stack` (05/07): one marquee per layer driven by `gsap.ticker`, speed follows scroll velocity and
+  slows on hover; choosing a tool highlights the projects that use it (`content/crossref.ts`,
+  `aria-live`). No skill bars.
+- `Signals` (06/07): GitHub public record with its date (20 repos, 93 stars, achievements).
+- `Contact` (07/07, global footer on every route): masked headline, selectable email + copy button
+  with a "Copied" state, magnetic GitHub/LinkedIn, © 2026, motto, Tiruppur + live IST, G hint,
+  Back to top through Lenis. Header turns paper over it.
+- `scripts/frames.ts` (`pnpm frames <phase> <route> [n]`): viewport frames through the scroll, since
+  pinned sections don't read in a full-page capture.
+
+**Fixed during review**
+- Spec plates printed the project title a second time under the plate title → removed from the plate.
+- Plate titles overlapping busy video were unreadable → titles now sit under the media.
+- Header stayed ink over the footer → its triggers refresh after the page pins (`refreshPriority`).
+
+**Verified**
+- lint, typecheck, build; Playwright 16 passed, 2 skipped (adds: home section order, copy email
+  writes to the clipboard, a plate flips into `/work/orion`).
+- Screenshots `.review/p4/` (full page + `frames/` every third scroll stop, desktop and mobile).
+
+**Measured (to fix in P7)**
+- `/` First Load JS reported by Next: 217 KB (was 197 KB est.). Still over the 180 KB budget.

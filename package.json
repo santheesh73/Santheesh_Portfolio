@@ -13,7 +13,8 @@
     "test": "vitest run",
     "e2e": "playwright test",
     "shots": "tsx scripts/screenshots.ts",
-    "media": "tsx scripts/capture-media.ts"
+    "media": "tsx scripts/capture-media.ts",
+    "frames": "tsx scripts/frames.ts"
   },
   "dependencies": {
     "@gsap/react": "2.1.2",
