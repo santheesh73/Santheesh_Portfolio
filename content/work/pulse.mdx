@@ -1,0 +1,34 @@
+## The problem
+
+When production breaks, the paging system is the one thing that cannot be flaky. An alert has to reach exactly one incident, the right person has to be paged once, and escalation has to keep going if nobody answers, even when a broker dies or two workers race for the same job.
+
+## The approach
+
+Pulse treats every promise as something to enforce and prove. There are 19 written guarantees in `docs/INVARIANTS.md`, and each one names the mechanism that enforces it and the test that proves it.
+
+- **Restart-safe escalation timers.** The timer is a Postgres column, `next_escalation_at`, not a Celery countdown. Wipe Redis mid-incident and it still escalates.
+- **Race-free deduplication.** A partial unique index on `(service, dedup_key)` for unresolved incidents means eight identical alerts fired at once become one incident with eight alerts.
+- **Idempotent paging.** The scheduled task and the safety-net sweeper are designed to race. A guard under `SELECT … FOR UPDATE SKIP LOCKED` lets exactly one win.
+- **DST-correct rotations.** A 09:00 handoff stays at 09:00 local through spring-forward and fall-back.
+
+## Architecture
+
+<Architecture />
+
+Postgres is the source of truth: dedup, single escalation and single page are all database guarantees. Redis is disposable, with persistence deliberately off. A dedicated worker consumes only the escalations queue, so a notification backlog can never delay paging.
+
+## What it guarantees
+
+<Guarantees />
+
+## How it is proven
+
+- 726 backend tests with 95% statement and branch coverage, and 42 frontend tests, driven by a frozen-time model with an explicit `now`.
+- Property-based tests (Hypothesis) for the on-call maths.
+- A seeded fault-injection simulator: broker outages, lost and duplicated messages, workers dying mid-transaction, concurrent sweepers and clock skew, with the invariants checked after every operation.
+
+## What the tests found
+
+The property tests found a real fall-back bug: during the repeated 01:00–02:00 hour, the resolver could pick yesterday's responder for 30 minutes, so the engine would have paged the wrong person. The simulator found that acknowledging and then unacknowledging a maintenance incident paged the on-call. Both now have regression tests that fail against the old code.
+
+<Todo>What I learned (in Santheesh's own words)</Todo>

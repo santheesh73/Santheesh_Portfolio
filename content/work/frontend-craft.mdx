@@ -1,0 +1,24 @@
+## The problem
+
+AI coding agents can write a working interface in minutes. They also produce the same interface every time, and they say it is accessible and polished without checking.
+
+## The approach
+
+Frontend Craft is an open-source skill for AI coding agents, Claude Code first. It runs the whole frontend process, Understand → Discover → Decide → Implement → Evaluate, and adds three things most skills leave out.
+
+- **Contract.** A design direction stored in the repo under `.craft/`, so it survives across sessions.
+- **Checks.** The `craft` CLI runs executable audits, including 20 "Slop Lint" rules, instead of prose advice.
+- **Proof.** The agent may only claim what a generated report supports: no receipt, no claim.
+- **Benchmark.** A paired evaluation harness compares the skill against a baseline.
+
+One installer covers Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI and more. Only installation is verified automatically; no agent is marked supported until a person runs the behaviour check.
+
+## Architecture
+
+<Architecture />
+
+## What it guarantees
+
+<Guarantees />
+
+<Todo>What I learned (in Santheesh's own words)</Todo>

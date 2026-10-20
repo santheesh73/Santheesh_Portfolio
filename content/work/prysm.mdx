@@ -1,0 +1,30 @@
+## The problem
+
+Audit preparation is slow and reactive. GST mismatches, missing invoices and late filings tend to surface during the audit itself, when they are most expensive to fix.
+
+## The approach
+
+PRYSM is a continuous audit intelligence layer for finance teams, CFOs, CA firms and SMEs. Models read documents and explain findings; deterministic rules decide what is a finding.
+
+- **Extract.** PyMuPDF and Tesseract pull text from native and scanned PDFs.
+- **Read.** An LLM extracts entities: GSTIN, invoice numbers, dates, amounts, HSN codes.
+- **Decide.** 18 deterministic compliance rules flag gaps and mismatches.
+- **Rank.** A risk dashboard sorts findings into Critical, High, Medium and Low.
+- **Explain.** An AI copilot explains each risk in plain English, and the report exports as an audit-ready PDF.
+
+ChromaDB adds semantic search across the uploaded files.
+
+## Architecture
+
+<Architecture />
+
+## What it guarantees
+
+<Guarantees />
+
+## Team
+
+Built with Team Ragnarok. Santheesh's role, per the repository's team table: backend lead, covering FastAPI, the OCR pipeline, the database and the compliance engine.
+
+<Todo>Confirm role on PRYSM</Todo>
+<Todo>What I learned (in Santheesh's own words)</Todo>

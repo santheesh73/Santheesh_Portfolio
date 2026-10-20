@@ -1,0 +1,23 @@
+## The problem
+
+Most AI assistants send every conversation and every document to someone else's server. For private notes and files, that is the wrong default.
+
+## The approach
+
+Orion runs the model in the browser. WebLLM uses WebGPU for local inference, and everything the assistant knows about you lives in IndexedDB on your own device.
+
+- **Local inference** through WebLLM and WebGPU.
+- **Local memory**: chats, documents and settings persist in IndexedDB via Dexie.
+- **Document intelligence**: upload, parse, chunk, search and chat with local files.
+- **Worker isolation**: generation and parsing run in Web Workers, off the main thread.
+- **Offline-first PWA** with zero telemetry.
+
+## Architecture
+
+<Architecture />
+
+## What it guarantees
+
+<Guarantees />
+
+<Todo>What I learned (in Santheesh's own words)</Todo>

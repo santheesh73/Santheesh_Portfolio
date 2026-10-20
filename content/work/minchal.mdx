@@ -1,0 +1,32 @@
+## The problem
+
+Most households get an electricity bill with one number on it and no idea which appliance is driving it. Appliance-level monitoring needs smart plugs, meters or current clamps, which most families will not buy.
+
+MINCHAL starts with something every household already has: the bill.
+
+## The approach
+
+> Gemini reads the bill. The deterministic engine calculates. Gemini explains.
+
+A language model should not calculate money. MINCHAL uses Gemini only where perception or language is needed, and keeps every number inside a deterministic Python engine.
+
+- **Read.** Gemini Vision extracts consumption units, the amount, the billing period and the tariff from a photographed bill.
+- **Calculate.** The engine estimates each appliance's kWh from rated wattage, hours, duty cycle, star rating, age and observed symptoms.
+- **Normalise.** Estimates are scaled so their sum matches the units on the real bill.
+- **Plan.** Fixes and habits are ranked by return on investment and chosen within the household's budget.
+- **Explain.** Gemini writes the audit summary in English or Tamil.
+
+## Architecture
+
+<Architecture />
+
+## What it guarantees
+
+<Guarantees />
+
+## Context
+
+Built for Build with AI: Tech for Good 2026, GDG Coimbatore (GRD College). It is live as an installable PWA.
+
+<Todo>Hackathon result, if any</Todo>
+<Todo>What I learned (in Santheesh's own words)</Todo>
