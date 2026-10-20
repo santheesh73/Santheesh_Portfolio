@@ -15,7 +15,8 @@
     "shots": "tsx scripts/screenshots.ts",
     "media": "tsx scripts/capture-media.ts",
     "frames": "tsx scripts/frames.ts",
-    "audit:layout": "tsx scripts/audit-layout.ts"
+    "audit:layout": "tsx scripts/audit-layout.ts",
+    "budget": "tsx scripts/js-budget.ts"
   },
   "dependencies": {
     "@gsap/react": "2.1.2",
@@ -34,6 +35,7 @@
     "zod": "4.6.7"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@eslint/eslintrc": "^3.3.7",
     "@playwright/test": "1.56.1",
     "@tailwindcss/postcss": "4.3.3",

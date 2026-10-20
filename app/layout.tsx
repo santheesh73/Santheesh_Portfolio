@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "@/styles/globals.css";
@@ -6,10 +7,9 @@ import { LenisProvider } from "@/components/providers/LenisProvider";
 import { TransitionProvider } from "@/components/providers/TransitionProvider";
 import { Header } from "@/components/layout/Header";
 import type { MenuItem } from "@/components/layout/Menu";
-import { Cursor } from "@/components/layout/Cursor";
-import { ScrollProgress } from "@/components/layout/ScrollProgress";
-import { BlueprintGrid } from "@/components/layout/BlueprintGrid";
+import { LazyCursor, LazyScrollProgress } from "@/components/layout/Lazy";
 import { Grain } from "@/components/layout/Grain";
+import { BlueprintGrid } from "@/components/layout/BlueprintGrid";
 import { Preloader } from "@/components/sections/Preloader";
 import { Contact } from "@/components/sections/Contact";
 import { BOOT_KEY } from "@/lib/boot";
@@ -21,6 +21,26 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { default: `${SITE_NAME} — AI Software Engineer`, template: `%s — ${SITE_NAME}` },
   description: `${profile.thesis} ${SITE_NAME} builds LLM applications, RAG systems, on-device AI and full-stack products.`,
+  openGraph: { type: "website", siteName: SITE_NAME, locale: "en_IN" },
+  twitter: { card: "summary_large_image" },
+};
+
+const personLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: profile.name,
+  jobTitle: "AI Software Engineer",
+  description: profile.headline,
+  url: SITE_URL,
+  email: `mailto:${profile.email}`,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: profile.location.city,
+    addressRegion: profile.location.region,
+    addressCountry: "IN",
+  },
+  sameAs: [profile.links.github, profile.links.linkedin],
+  knowsAbout: profile.builds,
 };
 
 export const viewport: Viewport = {
@@ -72,27 +92,33 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: boot }} />
       </head>
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd).replace(/</g, "\\u003c") }}
+        />
         <a href="#main" className="skip-link" data-transition="none">
           Skip to content
         </a>
         <LenisProvider>
           <TransitionProvider>
             <BlueprintGrid />
-            <ScrollProgress />
+            <LazyScrollProgress />
             <Header name={profile.name} items={MENU} />
             <main id="main" tabIndex={-1} className="relative z-[2] outline-none">
               {children}
             </main>
-            <Contact
-              heading={profile.taglines.contact}
-              email={profile.email}
-              github={profile.links.github}
-              linkedin={profile.links.linkedin}
-              motto={profile.taglines.motto}
-              location={`${profile.location.city}, IN`}
-              homeIndex={7}
-            />
-            <Cursor />
+            <Suspense>
+              <Contact
+                heading={profile.taglines.contact}
+                email={profile.email}
+                github={profile.links.github}
+                linkedin={profile.links.linkedin}
+                motto={profile.taglines.motto}
+                location={`${profile.location.city}, IN`}
+                homeIndex={7}
+              />
+            </Suspense>
+            <LazyCursor />
             <Grain />
             <Preloader log={profile.bootLog} />
           </TransitionProvider>

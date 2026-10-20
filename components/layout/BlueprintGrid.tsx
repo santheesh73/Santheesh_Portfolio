@@ -1,34 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { gsap, useGSAP } from "@/lib/gsap";
-import { EASE } from "@/lib/motion";
-import { prefersReducedMotion } from "@/lib/useReducedMotion";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { cn } from "@/lib/cn";
 
 const COLS = 12;
 
 /**
- * Hairline column guides that draw in on load. Press G to switch to
+ * Hairline column guides that draw in on load (a CSS animation, staggered out
+ * from the centre, so it costs no script at hydration). Press G to switch to
  * "blueprint mode": stronger guides plus column coordinates.
  */
 export function BlueprintGrid() {
   const ref = useRef<HTMLDivElement>(null);
   const [blueprint, setBlueprint] = useState(false);
-
-  useGSAP(
-    () => {
-      if (prefersReducedMotion()) return;
-      gsap.from(".bp-col", {
-        scaleY: 0,
-        duration: 1.4,
-        ease: EASE.structure,
-        stagger: { each: 0.05, from: "center" },
-        delay: 0.2,
-      });
-    },
-    { scope: ref },
-  );
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -52,6 +36,7 @@ export function BlueprintGrid() {
       {Array.from({ length: COLS }, (_, i) => (
         <div
           key={i}
+          style={{ "--bp-i": Math.abs(i - (COLS - 1) / 2) } as CSSProperties}
           className={cn(
             "bp-col relative h-full origin-top border-x transition-colors duration-500",
             i >= 4 && "max-md:hidden",

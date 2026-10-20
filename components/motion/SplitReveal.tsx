@@ -35,38 +35,69 @@ export function SplitReveal({
   const ref = useRef<HTMLElement>(null);
 
   useGSAP(
-    () => {
+    (_ctx, contextSafe) => {
       const el = ref.current;
-      if (!el) return;
+      if (!el || !contextSafe) return;
       if (prefersReducedMotion()) {
         el.dataset.split = "done";
         return;
       }
-      const split = SplitText.create(el, {
-        type: by === "words" ? "lines,words" : "lines",
-        mask: "lines",
-        linesClass: "split-line",
-        autoSplit: true,
-        aria: "auto",
-        onSplit(self) {
-          el.dataset.split = "done";
-          const targets = by === "words" ? self.words : self.lines;
-          const waitForPage = trigger === "mount" && !isRevealed();
-          const tween = gsap.from(targets, {
-            paused: waitForPage,
-            yPercent: 110,
-            duration: DUR.reveal,
-            ease: EASE.structure,
-            stagger: by === "words" ? STAGGER.words : STAGGER.lines,
-            delay,
-            scrollTrigger:
-              trigger === "scroll" ? { trigger: el, start: "top 88%", once: true } : undefined,
-          });
-          if (waitForPage) whenRevealed(() => tween.play());
-          return tween;
-        },
+      let pending: (() => void) | null = null;
+      let split: SplitText | null = null;
+      const setup = contextSafe(() => {
+        split = SplitText.create(el, {
+          type: by === "words" ? "lines,words" : "lines",
+          mask: "lines",
+          linesClass: "split-line",
+          autoSplit: true,
+          // text stays as real DOM text in the split spans; aria-label on a plain element is not allowed
+          aria: "none",
+          onSplit(self) {
+            el.dataset.split = "done";
+            const targets = by === "words" ? self.words : self.lines;
+            const play = () =>
+              gsap.from(targets, {
+                yPercent: 110,
+                duration: DUR.reveal,
+                ease: EASE.structure,
+                stagger: by === "words" ? STAGGER.words : STAGGER.lines,
+                delay,
+                scrollTrigger:
+                  trigger === "scroll" ? { trigger: el, start: "top 88%", once: true } : undefined,
+              });
+            // Under the preloader / route curtain the text stays painted in place (it is
+            // covered anyway, and stays an early LCP candidate); the from-state applies at the reveal.
+            if (trigger === "mount" && !isRevealed()) {
+              pending?.();
+              pending = whenRevealed(() => {
+                pending = null;
+                play();
+              });
+              return;
+            }
+            return play();
+          },
+        });
       });
-      return () => split.revert();
+      // Scroll reveals split only when they come near the viewport: splitting every
+      // headline at hydration is a long layout pass on slow phones.
+      let io: IntersectionObserver | null = null;
+      if (trigger === "scroll") {
+        io = new IntersectionObserver(
+          (entries) => {
+            if (!entries.some((e) => e.isIntersecting)) return;
+            io?.disconnect();
+            setup();
+          },
+          { rootMargin: "0px 0px 50% 0px" },
+        );
+        io.observe(el);
+      } else setup();
+      return () => {
+        io?.disconnect();
+        pending?.();
+        split?.revert();
+      };
     },
     { scope: ref },
   );

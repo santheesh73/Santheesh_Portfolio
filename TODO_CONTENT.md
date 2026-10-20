@@ -10,7 +10,8 @@ Unknowns live in `content/*.ts` and `content/work/*.mdx` as `TODO(santheesh): â€
 - [ ] Resume PDF (the resume button stays hidden until it exists)
 - [ ] Clash Display + General Sans font files. Fontshare was unreachable from the build
       environment, so Bricolage Grotesque + Geist ship as the documented fallbacks. Drop the
-      `.woff2` files into `app/fonts/` and update `app/fonts.ts`.
+      `.woff2` files into `app/fonts/` and update `app/fonts.ts` (subset them to Latin like the
+      current files to keep page weight down).
 - [ ] HeartTune media: the live site was unreachable from the build machine and the repo is
       private. Run `pnpm media hearttune` from a machine that can reach it (it shows a spec
       plate until then).

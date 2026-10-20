@@ -63,7 +63,13 @@ export function ArchitectureDiagram({
 
   return (
     <figure className={cn("not-prose", className)}>
-      <div className={compact ? "" : "overflow-x-auto overscroll-x-contain"}>
+      <div
+        className={compact ? "" : "overflow-x-auto overscroll-x-contain"}
+        // the full diagram scrolls sideways on narrow screens, so keyboards must be able to reach it
+        tabIndex={compact ? undefined : 0}
+        role={compact ? undefined : "region"}
+        aria-label={compact ? undefined : "Architecture diagram"}
+      >
         <svg
           viewBox={`0 ${top} ${vbW} ${vbH}`}
           className={cn("block h-auto w-full", !compact && "min-w-[640px]")}

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, type ReactNode } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/useReducedMotion";
 import { revealOnFocus } from "@/lib/revealOnFocus";
@@ -13,11 +13,14 @@ import { SplitReveal } from "@/components/motion/SplitReveal";
 /** Pinned horizontal gallery of featured plates (desktop); vertical stack on mobile. */
 export function WorkReel({
   projects,
+  media,
   totalWork,
   index,
   total,
 }: {
   projects: Project[];
+  /** slug → pre-rendered `<ProjectMedia>` */
+  media: Record<string, ReactNode>;
   totalWork: number;
   index: number;
   total: number;
@@ -73,7 +76,7 @@ export function WorkReel({
         </header>
         {projects.map((p, i) => (
           <div key={p.slug} data-plate className="shrink-0 md:w-[min(56vw,62vh*1.6)] motion-reduce:md:w-auto">
-            <ProjectPlate project={p} index={i} sizes="(min-width: 768px) 56vw, 100vw" />
+            <ProjectPlate project={p} index={i} media={media[p.slug]} />
           </div>
         ))}
       </div>

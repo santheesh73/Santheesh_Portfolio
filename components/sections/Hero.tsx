@@ -1,9 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { hasWebGL } from "@/lib/webgl";
+import { afterIdle, fieldMode } from "@/lib/webgl";
 import { useEffect, useRef, useState } from "react";
-import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { EASE } from "@/lib/motion";
 import { ENTROPY_REST, heroState } from "@/lib/heroState";
 import { whenRevealed } from "@/lib/pageReveal";
@@ -12,7 +12,9 @@ import { SplitReveal } from "@/components/motion/SplitReveal";
 import { Scramble } from "@/components/motion/Scramble";
 import { Chip } from "@/components/ui/Chip";
 import { Clock } from "@/components/layout/Clock";
-import { SignalStatic } from "@/components/webgl/SignalStatic";
+const SignalStatic = dynamic(() => import("@/components/webgl/SignalStatic").then((m) => m.SignalStatic), {
+  ssr: false,
+});
 
 const SignalField = dynamic(() => import("@/components/webgl/SignalField"), { ssr: false });
 
@@ -34,9 +36,16 @@ export function Hero({ name, thesis, roles, location }: Props) {
   const stateLabel = useRef<HTMLSpanElement>(null);
   const [mode, setMode] = useState<"pending" | "webgl" | "static">("pending");
   const lines = useRef(name.toUpperCase().split(" ")).current;
+  // points fly in once the page is revealed and the field has mounted, whichever is later
+  const arrival = useRef({ revealed: false, ready: false });
+  const maybeArrive = () => {
+    const a = arrival.current;
+    if (a.revealed && a.ready) gsap.to(heroState, { arrival: 0, duration: 2.4, ease: EASE.signal, delay: 0.1 });
+  };
 
   useEffect(() => {
-    setMode(prefersReducedMotion() || !hasWebGL() ? "static" : "webgl");
+    // the field mounts once the page has loaded and gone idle: the HTML hero paints first
+    return afterIdle(() => setMode(fieldMode(prefersReducedMotion())));
   }, []);
 
   useGSAP(
@@ -59,7 +68,8 @@ export function Hero({ name, thesis, roles, location }: Props) {
 
       heroState.arrival = 1;
       const stopWaiting = whenRevealed(() => {
-        gsap.to(heroState, { arrival: 0, duration: 2.4, ease: EASE.signal, delay: 0.1 });
+        arrival.current.revealed = true;
+        maybeArrive();
       });
 
       const io = new IntersectionObserver(([entry]) => {
@@ -88,7 +98,6 @@ export function Hero({ name, thesis, roles, location }: Props) {
           },
         });
       });
-      ScrollTrigger.refresh();
       return () => {
         stopWaiting();
         io.disconnect();
@@ -107,7 +116,15 @@ export function Hero({ name, thesis, roles, location }: Props) {
       data-cursor-tone="signal"
     >
       <div className="absolute inset-0" aria-hidden="true">
-        {mode === "webgl" && <SignalField lines={lines} />}
+        {mode === "webgl" && (
+          <SignalField
+            lines={lines}
+            onReady={() => {
+              arrival.current.ready = true;
+              maybeArrive();
+            }}
+          />
+        )}
         {mode === "static" && <SignalStatic lines={lines} />}
       </div>
 

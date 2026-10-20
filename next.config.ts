@@ -4,6 +4,7 @@ import createMDX from "@next/mdx";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  productionBrowserSourceMaps: process.env.SOURCEMAPS === "1",
   pageExtensions: ["ts", "tsx", "md", "mdx"],
   images: {
     formats: ["image/avif", "image/webp"],

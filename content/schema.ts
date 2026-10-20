@@ -1,19 +1,8 @@
 import { z } from "zod";
 
-/**
- * Unknown facts are written as `TODO(santheesh): …` strings. They pass validation,
- * get listed in TODO_CONTENT.md, and are never rendered (see `known()`).
- */
-export const TODO_PREFIX = "TODO(santheesh):";
-export type Todo = `TODO(santheesh):${string}`;
+import { isTodo, TODO_PREFIX, type Todo } from "./helpers";
 
-export const isTodo = (v: unknown): v is Todo => typeof v === "string" && v.startsWith(TODO_PREFIX);
-
-/** Returns the value only if it is a real, filled-in fact. */
-export function known<T>(v: T | Todo | undefined | null): T | undefined {
-  if (v === undefined || v === null || isTodo(v)) return undefined;
-  return v;
-}
+export { TODO_PREFIX, isTodo, known, CATEGORY_LABEL, type Todo } from "./helpers";
 
 const todo = z.custom<Todo>(isTodo, { message: `must start with "${TODO_PREFIX}"` });
 const text = z.string().min(1);
@@ -25,12 +14,6 @@ export type ProjectStatus = z.infer<typeof StatusSchema>;
 
 export const CategorySchema = z.enum(["ai-product", "devtool", "platform"]);
 export type ProjectCategory = z.infer<typeof CategorySchema>;
-
-export const CATEGORY_LABEL: Record<ProjectCategory, string> = {
-  "ai-product": "AI products",
-  devtool: "Developer tools",
-  platform: "Platforms",
-};
 
 /** model = probabilistic (cobalt), engine = deterministic (ink), io = data in/out. */
 export const NodeKindSchema = z.enum(["model", "engine", "io", "store"]);

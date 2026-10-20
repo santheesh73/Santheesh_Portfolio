@@ -18,7 +18,7 @@
   --amber: #b7791f;
 
   /* annotation text on paper needs AA: ink-3 is decorative-only, use this for small text */
-  --ink-3-text: #6b7183;
+  --ink-3-text: #5f6577;
 
   --gutter: clamp(16px, 2.2vw, 40px);
   --col-gap: clamp(12px, 1.4vw, 24px);
@@ -222,8 +222,10 @@
 }
 
 /* Hide split targets until GSAP has split them (prevents a flash of unmasked text).
-   Only when JS motion is on; a failsafe reveals them if JS never arrives. */
-html.js-motion [data-split=""] {
+   Only when JS motion is on and no preloader covers the page: under the first-visit
+   preloader the text paints normally (so it counts as LCP) and animates at the reveal.
+   A failsafe reveals them if JS never arrives. */
+html.js-motion.booted [data-split=""] {
   visibility: hidden;
   animation: split-failsafe 0s linear 2.5s forwards;
 }
@@ -289,4 +291,17 @@ html:not(.js-motion) [data-preloader] {
 
 html.is-booting {
   overflow: hidden;
+}
+
+/* Blueprint columns draw in from the centre on load (expo.out, 0.05 s stagger). */
+@media (prefers-reduced-motion: no-preference) {
+  .bp-col {
+    animation: bp-draw 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(0.2s + var(--bp-i, 0) * 0.05s);
+  }
+}
+@keyframes bp-draw {
+  from {
+    transform: scaleY(0);
+  }
 }

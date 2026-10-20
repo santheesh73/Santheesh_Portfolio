@@ -6,7 +6,8 @@ import { cn } from "@/lib/cn";
  */
 export function RollText({ text, className }: { text: string; className?: string }) {
   return (
-    <span className={cn("inline-block", className)} aria-label={text}>
+    <span className={cn("inline-block", className)}>
+      <span className="sr-only">{text}</span>
       {[...text].map((ch, i) => (
         <span key={i} aria-hidden="true" className="relative inline-block overflow-hidden align-bottom">
           <span

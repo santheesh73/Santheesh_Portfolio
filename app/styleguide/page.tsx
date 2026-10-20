@@ -192,7 +192,7 @@ export default function StyleguidePage() {
             <Label>Eases</Label>
             <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 font-mono text-sm">
               <dt className="text-signal">signal</dt>
-              <dd className="text-ink-2">CustomEase 0.65,0,0.35,1 · drift, in/out</dd>
+              <dd className="text-ink-2">cubic-bezier(0.65, 0, 0.35, 1) · drift, in/out</dd>
               <dt>structure</dt>
               <dd className="text-ink-2">expo.out · snaps</dd>
               <dt>reveal</dt>

@@ -89,8 +89,11 @@ export function Menu({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
-  // Close on route change.
+  // Close on route change (not on mount: the menu loads lazily and may mount already open).
+  const lastPath = useRef(pathname);
   useEffect(() => {
+    if (lastPath.current === pathname) return;
+    lastPath.current = pathname;
     onClose();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);

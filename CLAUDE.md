@@ -9,9 +9,12 @@ read → decide. Not a 3D house / room walkthrough.
 
 - Next.js 15 App Router, React 19, TypeScript strict, pnpm
 - Tailwind v4, tokens in `styles/globals.css` (`:root` vars mapped via `@theme inline`)
-- GSAP 3 (ScrollTrigger, SplitText, Flip, CustomEase, ScrambleText, DrawSVG) + `@gsap/react`
-- Lenis (one instance, `components/providers/LenisProvider.tsx`, ticked by `gsap.ticker`)
-- three + R3F + drei for the hero only, lazy via `next/dynamic({ ssr: false })`
+- GSAP 3 (ScrollTrigger, SplitText; Flip and DrawSVG loaded lazily via `loadFlip()` / `loadDrawSVG()`) + `@gsap/react`.
+  CustomEase and ScrambleText are replaced by a hand-written `signal` cubic-bezier (`lib/motion.ts`)
+  and `lib/scrambleLite.ts` to keep initial JS under budget.
+- Lenis (one instance, `components/providers/LenisProvider.tsx`, ticked by `gsap.ticker`, created after load + idle; `getLenis()` can be null)
+- three + R3F + drei for the hero only, lazy via `next/dynamic({ ssr: false })`, mounted after load + idle.
+  Software GL (SwiftShader/llvmpipe) gets the static canvas field; `?webgl` forces WebGL for QA.
 - MDX for case studies, zod-validated content in `content/`
 - Playwright (screenshots, e2e), Vitest (utils), ESLint + Prettier
 
@@ -47,6 +50,16 @@ headings; fade-up on every element.
 - Unknowns are `TODO(santheesh): …` values in `content/`, hidden in the UI until filled, listed in `TODO_CONTENT.md`.
 - Team builds credited honestly ("Built with a team; my role: …").
 - Voice: plain, confident, specific, short sentences. No "passionate", "cutting-edge", "seamless", "leverage", "revolutionary".
+
+## Performance rules
+
+- Initial JS ≤ 180 KB gzip per route (`pnpm budget`). Don't import `next/image` anywhere (even
+  `getImageProps` pulls the Image client chunk): use `imgProps()` from `lib/img.ts` in server components.
+- Client components get server-rendered media/glyphs as `ReactNode` props instead of importing them.
+- Client code imports content helpers from `content/helpers.ts` (zod-free), never `content/schema.ts`.
+- Entrance text must stay painted under the preloader/curtain (LCP): mount-trigger animations apply
+  their from-state at `whenRevealed`, not at hydration.
+- Home sections sit in their own `<Suspense>` so hydration yields between them.
 
 ## Phase gates
 

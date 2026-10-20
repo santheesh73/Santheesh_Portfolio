@@ -1,13 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, type ReactNode } from "react";
 import { gsap } from "@/lib/gsap";
 import type { Project } from "@/content/schema";
-import { known } from "@/content/schema";
+import { known } from "@/content/helpers";
 import { prefersReducedMotion } from "@/lib/useReducedMotion";
 import { Chip } from "@/components/ui/Chip";
-import { ProjectMedia } from "./ProjectMedia";
 import { RollText } from "./RollText";
 import { cn } from "@/lib/cn";
 
@@ -20,12 +19,13 @@ export function ProjectPlate({
   project,
   index,
   className,
-  sizes,
+  media: mediaNode,
 }: {
   project: Project;
   index?: number;
   className?: string;
-  sizes?: string;
+  /** Pre-rendered `<ProjectMedia>` from a server component. */
+  media: ReactNode;
 }) {
   const media = useRef<HTMLDivElement>(null);
   const filterId = `rgb-${project.slug}`;
@@ -75,15 +75,15 @@ export function ProjectPlate({
         onPointerLeave={rest}
         onFocus={pulse}
         onBlur={rest}
-        aria-label={`${project.title}: ${project.pitch} View case study`}
       >
-        <div ref={media} data-flip-source className="relative aspect-[16/10] overflow-hidden border border-rule">
+        <div ref={media} data-flip-source aria-hidden="true" className="relative aspect-[16/10] overflow-hidden border border-rule">
           <div data-zoom className="absolute inset-0 will-change-transform">
-            <ProjectMedia project={project} sizes={sizes} className="h-full w-full" />
+            {mediaNode}
           </div>
         </div>
         <div className="relative mt-5 font-display text-[clamp(2.75rem,6.4vw,7rem)] leading-[0.9] font-semibold tracking-[-0.04em] text-ink">
           <RollText text={project.title} />
+          <span className="sr-only">. View case study</span>
         </div>
       </Link>
       <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">

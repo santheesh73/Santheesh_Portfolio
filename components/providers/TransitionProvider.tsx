@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useCallback, useContext, useEffect, useRef, type ReactNode } from "react";
-import { Flip, gsap, ScrollTrigger } from "@/lib/gsap";
+import { gsap, loadFlip, ScrollTrigger } from "@/lib/gsap";
 import { EASE, SCRAMBLE_GLYPHS } from "@/lib/motion";
 import { markHidden, markRevealed } from "@/lib/pageReveal";
 import { prefersReducedMotion } from "@/lib/useReducedMotion";
@@ -151,6 +151,7 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
         navigate(href, id);
         return;
       }
+      void loadFlip();
       scrolls.current.set(current.current, window.scrollY);
       const rect = source.getBoundingClientRect();
       const clone = source.cloneNode(true) as HTMLElement;
@@ -173,7 +174,11 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
       markHidden();
       lenisRef.current?.stop();
       gsap.set(backdrop.current, { visibility: "visible", pointerEvents: "auto" });
-      gsap.fromTo(backdrop.current, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35, ease: EASE.signal });
+      gsap.fromTo(
+        backdrop.current,
+        { autoAlpha: 0 },
+        { autoAlpha: 1, duration: 0.35, ease: EASE.signal },
+      );
       gsap.to(clone, {
         scale: 1.03,
         duration: 0.35,
@@ -210,7 +215,16 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
     }
     target.style.visibility = "hidden";
     gsap.set(f.clone, { scale: 1 });
-    Flip.fit(f.clone, target, { duration: 0.8, ease: EASE.structure, scale: false, onComplete: finish });
+    loadFlip()
+      .then((Flip) =>
+        Flip.fit(f.clone, target, {
+          duration: 0.8,
+          ease: EASE.structure,
+          scale: false,
+          onComplete: finish,
+        }),
+      )
+      .catch(finish);
   }, []);
 
   // Intercept internal link clicks before Next's <Link> handles them.

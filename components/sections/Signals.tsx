@@ -38,7 +38,11 @@ export function Signals({
             <div key={r.k} className="border-b border-rule py-6 pr-6 odd:border-r">
               <dt className="t-label text-ink-2">{r.k}</dt>
               <dd className="mt-3 font-mono text-[clamp(3.5rem,8vw,7.5rem)] leading-none font-medium tracking-[-0.04em] tabular-nums">
-                <Scramble as="span" text={r.v} className="!text-[length:inherit] !tracking-[inherit]" />
+                <Scramble
+                  as="span"
+                  text={r.v}
+                  className="!text-[length:inherit] !tracking-[inherit]"
+                />
               </dd>
             </div>
           ))}
@@ -50,18 +54,18 @@ export function Signals({
               ))}
             </dd>
           </div>
-          <div className="col-span-2 pt-5">
-            <a
-              href={github}
-              target="_blank"
-              rel="noreferrer"
-              data-cursor="Open ↗"
-              className="t-label underline decoration-rule underline-offset-4 hover:decoration-ink"
-            >
-              Open GitHub profile ↗
-            </a>
-          </div>
         </dl>
+        <div className="col-span-full pt-5 md:col-span-8 md:col-start-5">
+          <a
+            href={github}
+            target="_blank"
+            rel="noreferrer"
+            data-cursor="Open ↗"
+            className="t-label underline decoration-rule underline-offset-4 hover:decoration-ink"
+          >
+            Open GitHub profile ↗
+          </a>
+        </div>
       </div>
     </section>
   );

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { NotFoundField } from "@/components/sections/NotFoundField";
+import { LazyNotFound } from "@/components/layout/Lazy";
 
 export const metadata: Metadata = { title: "Not found" };
 
 export default function NotFound() {
-  return <NotFoundField />;
+  return <LazyNotFound />;
 }

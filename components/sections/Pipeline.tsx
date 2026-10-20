@@ -1,12 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { EASE, SIGNAL_OFFSET } from "@/lib/motion";
 import { prefersReducedMotion } from "@/lib/useReducedMotion";
 import { revealOnFocus } from "@/lib/revealOnFocus";
-import { DocumentGlyph } from "@/components/pipeline/DocumentGlyph";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { SplitReveal } from "@/components/motion/SplitReveal";
 import type { PipelineStage } from "@/content/pipeline";
@@ -66,10 +65,13 @@ function StageCard({ stage, i, total }: { stage: PipelineStage; i: number; total
  */
 export function Pipeline({
   stages,
+  docs,
   index,
   total,
 }: {
   stages: PipelineStage[];
+  /** stage id → pre-rendered `<DocumentGlyph>` (server-rendered SVG, no client code) */
+  docs: Record<string, ReactNode>;
   index: number;
   total: number;
 }) {
@@ -199,7 +201,7 @@ export function Pipeline({
           <div className="relative aspect-[220/280]">
             {stages.map((s) => (
               <div key={s.id} data-doc className="absolute inset-0 shadow-[0_1px_0_var(--rule)]">
-                <DocumentGlyph variant={s.doc} />
+                {docs[s.id]}
               </div>
             ))}
           </div>
@@ -252,7 +254,7 @@ export function Pipeline({
           <li key={s.id} className="col-span-full grid grid-cols-[88px_1fr] gap-5">
             <div className="relative">
               <div className="aspect-[220/280] w-full" aria-hidden="true">
-                <DocumentGlyph variant={s.doc} />
+                {docs[s.id]}
               </div>
               {i < stages.length - 1 && (
                 <span aria-hidden="true" className="absolute top-full left-1/2 h-16 w-px bg-ink" />

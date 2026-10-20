@@ -5,6 +5,7 @@ import { createContext, useContext, useEffect, useRef, useState, type ReactNode 
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/useReducedMotion";
 import { setLenis as setGlobalLenis } from "@/lib/lenis";
+import { afterIdle } from "@/lib/idle";
 
 type LenisCtx = {
   lenis: Lenis | null;
@@ -28,33 +29,38 @@ export function LenisProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (prefersReducedMotion()) return;
+    let teardown: (() => void) | null = null;
+    // Created once the page has loaded and gone idle: constructing Lenis measures
+    // the document, which is a long forced layout during hydration on slow phones.
+    const cancel = afterIdle(() => {
+      const instance = new Lenis({
+        duration: 1.1,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        syncTouch: false,
+      });
+      lenisRef.current = instance;
+      setLenis(instance);
+      setGlobalLenis(instance);
+      // The preloader may already be running; hold scroll until it finishes.
+      if (document.documentElement.classList.contains("is-booting")) instance.stop();
 
-    const instance = new Lenis({
-      duration: 1.1,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      syncTouch: false,
+      instance.on("scroll", ScrollTrigger.update);
+      const raf = (time: number) => instance.raf(time * 1000);
+      gsap.ticker.add(raf);
+      gsap.ticker.lagSmoothing(0);
+
+      teardown = () => {
+        gsap.ticker.remove(raf);
+        instance.destroy();
+        setGlobalLenis(null);
+        lenisRef.current = null;
+        setLenis(null);
+      };
     });
-    lenisRef.current = instance;
-    setLenis(instance);
-    setGlobalLenis(instance);
-    // The preloader may already be running; hold scroll until it finishes.
-    if (document.documentElement.classList.contains("is-booting")) instance.stop();
-
-    instance.on("scroll", ScrollTrigger.update);
-    const raf = (time: number) => instance.raf(time * 1000);
-    gsap.ticker.add(raf);
-    gsap.ticker.lagSmoothing(0);
-
-    // Re-measure once fonts are in; pinned scenes depend on text metrics.
-    document.fonts?.ready.then(() => ScrollTrigger.refresh());
-
     return () => {
-      gsap.ticker.remove(raf);
-      instance.destroy();
-      setGlobalLenis(null);
-      lenisRef.current = null;
-      setLenis(null);
+      cancel();
+      teardown?.();
     };
   }, []);
 

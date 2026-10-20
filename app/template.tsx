@@ -16,11 +16,12 @@ export default function Template({ children }: { children: ReactNode }) {
     () => {
       const items = ref.current?.querySelectorAll("[data-enter]");
       if (!items?.length || prefersReducedMotion()) return;
-      gsap.set(items, { y: 24, autoAlpha: 0 });
+      // Under the preloader / route curtain the items stay painted (they are covered,
+      // and the case-study media stays an early LCP candidate); the from-state applies at the reveal.
       return whenRevealed(() => {
-        gsap.to(items, {
-          y: 0,
-          autoAlpha: 1,
+        gsap.from(items, {
+          y: 24,
+          autoAlpha: 0,
           duration: DUR.reveal,
           ease: EASE.structure,
           stagger: 0.06,

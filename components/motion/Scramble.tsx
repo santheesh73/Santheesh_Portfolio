@@ -5,7 +5,7 @@ import { gsap, useGSAP } from "@/lib/gsap";
 import { SCRAMBLE_GLYPHS } from "@/lib/motion";
 import { prefersReducedMotion } from "@/lib/useReducedMotion";
 import { cn } from "@/lib/cn";
-import { whenRevealed } from "@/lib/pageReveal";
+import { isRevealed, whenRevealed } from "@/lib/pageReveal";
 
 type Props = {
   text: string;
@@ -17,7 +17,7 @@ type Props = {
 
 /**
  * Mono labels only: random glyphs resolve into the final text (noise → order).
- * Screen readers get the final text via aria-label; the animated span is hidden.
+ * Screen readers get the final text from a visually hidden copy; the animated span is aria-hidden.
  */
 export function Scramble({
   text,
@@ -44,9 +44,12 @@ export function Scramble({
         });
 
       if (trigger === "mount") {
-        gsap.set(target, { opacity: 0 });
+        // already revealed: play now; otherwise the final text sits under the cover until the reveal
+        if (isRevealed()) {
+          play();
+          return;
+        }
         return whenRevealed(() => {
-          gsap.set(target, { opacity: 1 });
           play();
         });
       } else if (trigger === "scroll") {
@@ -66,7 +69,8 @@ export function Scramble({
   );
 
   return (
-    <Tag ref={ref} aria-label={text} className={cn("t-label", className)}>
+    <Tag ref={ref} className={cn("t-label", className)}>
+      <span className="sr-only">{text}</span>
       <span ref={inner} aria-hidden="true">
         {text}
       </span>

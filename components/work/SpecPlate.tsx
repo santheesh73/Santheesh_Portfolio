@@ -1,4 +1,5 @@
-import { CATEGORY_LABEL, type Project } from "@/content/schema";
+import type { Project } from "@/content/schema";
+import { CATEGORY_LABEL } from "@/content/helpers";
 import { ArchitectureDiagram } from "./ArchitectureDiagram";
 import { cn } from "@/lib/cn";
 

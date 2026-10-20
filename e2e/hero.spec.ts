@@ -20,6 +20,26 @@ test("hero headline is real text and the field compiles to structure on scroll",
   expect(errors).toEqual([]);
 });
 
+test("the WebGL field mounts (forced on this software renderer) and a software GPU gets the static field", async ({
+  page,
+}) => {
+  const isWebGL = () =>
+    page
+      .locator("section[aria-labelledby='hero-title'] canvas")
+      .evaluate((c: HTMLCanvasElement) => c.getContext("2d") === null);
+  await page.goto("/?webgl");
+  await expect(page.locator("section[aria-labelledby='hero-title'] canvas")).toHaveCount(1);
+  // R3F takes its context a moment after the canvas is in the DOM
+  await page.waitForFunction(() => {
+    const c = document.querySelector("section[aria-labelledby='hero-title'] canvas");
+    return c?.getAttribute("data-engine")?.includes("three") ?? false;
+  });
+  expect(await isWebGL()).toBe(true);
+  await page.goto("/");
+  await expect(page.locator("section[aria-labelledby='hero-title'] canvas")).toHaveCount(1);
+  expect(await isWebGL()).toBe(false); // SwiftShader here → static field
+});
+
 test("reduced motion shows the structured field immediately", async ({ browser }) => {
   const ctx = await browser.newContext({ reducedMotion: "reduce" });
   const page = await ctx.newPage();

@@ -1,15 +1,15 @@
-"use client";
-
-import Image from "next/image";
-import { useEffect, useRef } from "react";
 import type { Project } from "@/content/schema";
-import { prefersReducedMotion } from "@/lib/useReducedMotion";
 import { SpecPlate } from "./SpecPlate";
+import { InViewVideo } from "./InViewVideo";
 import { cn } from "@/lib/cn";
+import { imgProps } from "@/lib/img";
 
 /**
  * Project media at a fixed aspect: looping muted video (plays only while in
  * view, poster only under reduced motion), image, or a spec plate.
+ * A server component: images go through the Next image optimizer (`lib/img`),
+ * so no image runtime ships to the client. Client components receive it
+ * pre-rendered as a prop.
  */
 export function ProjectMedia({
   project,
@@ -22,47 +22,21 @@ export function ProjectMedia({
   sizes?: string;
   priority?: boolean;
 }) {
-  const video = useRef<HTMLVideoElement>(null);
   const m = project.media;
-
-  useEffect(() => {
-    const v = video.current;
-    if (!v) return;
-    if (prefersReducedMotion()) return;
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (e?.isIntersecting) v.play().catch(() => {});
-        else v.pause();
-      },
-      { threshold: 0.2 },
-    );
-    io.observe(v);
-    return () => io.disconnect();
-  }, []);
+  const img = (src: string, alt: string) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img {...imgProps(src, { sizes, priority })} alt={alt} className="absolute inset-0 h-full w-full object-cover object-top" />
+  );
 
   return (
     <div className={cn("relative overflow-hidden bg-paper-2", className)}>
       {m.kind === "video" && (
         <>
-          <Image src={m.poster} alt="" fill sizes={sizes} priority={priority} className="object-cover object-top" />
-          <video
-            ref={video}
-            className="absolute inset-0 h-full w-full object-cover object-top"
-            muted
-            loop
-            playsInline
-            preload="none"
-            poster={m.poster}
-            aria-label={m.alt}
-          >
-            <source src={m.src.replace(/\.mp4$/, ".webm")} type="video/webm" />
-            <source src={m.src} type="video/mp4" />
-          </video>
+          {img(m.poster, "")}
+          <InViewVideo src={m.src} label={m.alt} />
         </>
       )}
-      {m.kind === "image" && (
-        <Image src={m.src} alt={m.alt} fill sizes={sizes} priority={priority} className="object-cover object-top" />
-      )}
+      {m.kind === "image" && img(m.src, m.alt)}
       {m.kind === "plate" && <SpecPlate project={project} />}
     </div>
   );

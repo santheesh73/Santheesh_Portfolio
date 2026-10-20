@@ -95,6 +95,7 @@
 ## P3 — Hero WebGL signal field (2026-10-20)
 
 **Built**
+
 - `components/webgl/SignalField.tsx` (R3F, orthographic pixel-space camera, `THREE.Points` + custom
   `ShaderMaterial`), shaders in `components/webgl/shaders/*.glsl` (loaded as `asset/source`):
   - targets: "SANTHEESH S" rendered to an offscreen canvas in the display face and sampled on a
@@ -112,11 +113,13 @@
 - Fallback `SignalStatic`: 2D canvas of the structured state for reduced motion or no WebGL.
 
 **Verified**
+
 - lint, typecheck, build; `pnpm test` 10 passed; Playwright 11 passed (adds: hero headline is text,
   caption reaches 0.00 after one viewport of scroll, reduced motion renders the static field at 0.00).
 - Screenshots `.review/p3/`: arrival, rest, cursor repulsion, mid-scrub, structure, reduced motion.
 
 **Measured (to fix in P7)**
+
 - Initial JS on `/` (modern browsers, gzip, excluding the nomodule polyfill): ≈ 197 KB — over the
   180 KB budget. React/Next runtime ≈ 101 KB; GSAP + plugins chunk ≈ 45 KB. The WebGL chunks
   (three + R3F, ≈ 241 KB gzip) load lazily and are excluded.
@@ -124,6 +127,7 @@
 ## P4 — Home narrative
 
 **Built**
+
 - `Manifesto` (02/07): pinned; the philosophy sentence reads word by word from ink-3 to ink on scroll,
   cobalt underlines draw under "component" and "reliable".
 - `Pipeline` (03/07): pinned horizontal sequence Read → Validate → Decide → Explain, each stage tied
@@ -146,21 +150,25 @@
   pinned sections don't read in a full-page capture.
 
 **Fixed during review**
+
 - Spec plates printed the project title a second time under the plate title → removed from the plate.
 - Plate titles overlapping busy video were unreadable → titles now sit under the media.
 - Header stayed ink over the footer → its triggers refresh after the page pins (`refreshPriority`).
 
 **Verified**
+
 - lint, typecheck, build; Playwright 16 passed, 2 skipped (adds: home section order, copy email
   writes to the clipboard, a plate flips into `/work/orion`).
 - Screenshots `.review/p4/` (full page + `frames/` every third scroll stop, desktop and mobile).
 
 **Measured (to fix in P7)**
+
 - `/` First Load JS reported by Next: 217 KB (was 197 KB est.). Still over the 180 KB budget.
 
 ## P5 — Inner pages
 
 **Built**
+
 - `/work` (`WorkIndex`): list rows with a media preview that trails the pointer, or a grid of
   plates; switching view and filter (All / AI products / Developer tools / Platforms, with counts)
   re-flows the same elements with GSAP Flip. Grid plates use the shared-element transition; list
@@ -182,23 +190,27 @@
 - `lib/webgl.ts` (`hasWebGL`), `offset` prop on `SignalField` / `SignalStatic`.
 
 **Fixed during review**
+
 - Arriving on a case study could fire its next-project transition at once (stale scroll position
   during the route change). It now needs real user scroll input and a pass through the section.
 - Lab tiles are hidden until they snap in, so tests scroll them into view first.
 - Playwright limited to 2 workers: WebGL runs in SwiftShader here and starved the timing tests.
 
 **Verified**
+
 - lint, typecheck, build; Playwright 24 passed (adds: /work filter + grid toggle, case study rail
   and next-project loop, about/lab content, 404 compile + link home).
 - Screenshots `.review/p5/` (every route, desktop + mobile; `frames/` through the Pulse case study).
 
 **Left**
+
 - `/lab` has one lab project, so the grid leans on Frontend Craft internals; more lab entries need
   real projects from Santheesh.
 
 ## P6 — Polish
 
 **Changed**
+
 - Reduced motion on desktop: the Pipeline uses its stacked sequence, the Work reel becomes a
   two-column grid, and the Stack marquees wrap instead of clipping, so nothing sits off-screen in a
   scene that no longer scrolls sideways.
@@ -212,10 +224,12 @@
   1920 on every route, and no laid-out-but-invisible text under reduced motion.
 
 **Copy**
+
 - Checked all content and components against the voice rules: no banned words, no invented facts;
   roles show only where a README sources them, unconfirmed solo builds show no team line.
 
 **Verified**
+
 - lint, typecheck, build; Playwright 26 passed (adds: keyboard focus reveals an off-screen reel
   plate; reduced motion lays out every Pipeline stage and the full reel).
 - `pnpm audit:layout`: clean. `craft lint` (Frontend Craft CLI, run from a local clone): 0 blocking,
@@ -224,5 +238,69 @@
 - Screenshots `.review/p6/` (reduced motion: home, MINCHAL case, lab; 360px: home, about, work).
 
 **Timing**
+
 - Reveals 0.6–1.2s, micro-interactions 0.18–0.4s, scrubs 0.3–0.6s smoothing, one `signal` in/out
   ease and `expo.out` for snaps; the 2.4s hero arrival is the one deliberate long move.
+
+## P7 — Performance, SEO, launch prep
+
+**Changed**
+
+- Initial JS (gzip, every `<script>` the HTML loads, `pnpm budget`): home 235 → 177.9 KB; /work,
+  /about, /lab, case studies 171–173 KB. Budget is ≤ 180 KB, WebGL chunk excluded.
+  - Flip and DrawSVG load on demand (`loadFlip`, `loadDrawSVG`). CustomEase is replaced by a
+    hand-written `cubic-bezier(0.65, 0, 0.35, 1)` registered as `signal` (unit-tested against the
+    curve), ScrambleText by a small `scrambleText` plugin (`lib/scrambleLite.ts`). Same motion,
+    fewer bytes; the styleguide documents the curve.
+  - No `next/image` runtime: `lib/img.ts` writes optimizer URLs from server components.
+    `ProjectMedia` is a server component; client islands receive media as props.
+  - Cursor, scroll progress, menu and the 404 field are lazy chunks.
+- LCP: hero and page headlines are painted at first paint. Mount animations now apply their
+  from-state at the reveal instead of hiding text during hydration (it sits under the preloader or
+  curtain anyway). Same for `[data-enter]` items, so case-study media is not hidden either.
+- Main thread: home sections hydrate in separate Suspense boundaries; scroll-triggered
+  SplitReveals split only when near the viewport; Lenis and the WebGL probe run after load + idle;
+  one GL context probe instead of two; redundant `ScrollTrigger.refresh()` calls removed; the
+  blueprint grid draw-in is a CSS animation; grain is server-rendered CSS.
+- WebGL hero: software renderers (SwiftShader, llvmpipe, Basic Render) get the static canvas
+  field; the particle field otherwise mounts after idle. `?webgl` forces it.
+- Fonts subset to Latin + used symbols (Geist 69 → 35 KB, Bricolage 41 → 38 KB, JetBrains
+  40 → 38 KB). Video posters no longer load eagerly (the lazy poster `<img>` covers it).
+- Accessibility: `--ink-3-text` darkened #6b7183 → #5f6577 (4.46 → 5.3:1 on paper); header and
+  plate links named by their visible text; the wide architecture diagram is a focusable region;
+  next-project title starts at 0.5 opacity (≥ 3:1).
+- SEO: OG images via `next/og` (site + one per case study, Bricolage/JetBrains, OFL),
+  `sitemap.xml`, `robots.txt` (styleguide disallowed and noindex), Person JSON-LD, Twitter card.
+  `NEXT_PUBLIC_SITE_URL` sets the origin.
+- README with run and deploy steps. No `vercel.json` needed. Nothing deployed.
+
+**Measured** (Lighthouse 12.8.2, local production build, default simulated throttling)
+
+| Route       | Mobile P / A11y / BP / SEO | Mobile LCP · TBT · CLS     | Desktop P / A11y / BP / SEO | Desktop LCP · TBT · CLS    |
+| ----------- | -------------------------- | -------------------------- | --------------------------- | -------------------------- |
+| /           | 82–86 / 100 / 100 / 100    | 2.7 s · 310–450 ms · 0     | 87–95 / 100 / 100 / 100     | 0.7 s · 120–250 ms · 0.011 |
+| /work       | 90 / 100 / 100 / 100       | 2.7 s · 230 ms · 0         | 97 / 100 / 100 / 100        | 0.6 s · 0 ms · 0.011       |
+| /work/pulse | 79 / 100 / 100 / 100       | 3.7 s · 270 ms · 0         | 97 / 100 / 100 / 100        | 0.7 s · 10 ms · 0.011      |
+| /work/orion | 89 / 100 / 100 / 100       | 3.0 s · 190 ms · 0         | —                           | —                          |
+| /about      | 89–93 / 100 / 100 / 100    | 2.5–2.6 s · 150–260 ms · 0 | 98 / 100 / 100 / 100        | 0.6 s · 0 ms · 0.011       |
+| /lab        | 88 / 100 / 100 / 100       | 3.0 s · 220 ms · 0         | 98 / 100 / 100 / 100        | 0.6 s · 0 ms · 0.011       |
+
+- Ranges are repeat runs; Lighthouse varies ±5 on the same build here.
+- Observed (unthrottled trace) LCP on home is 0.2–0.45 s and equals FCP. The simulated mobile
+  LCP is higher because Lighthouse's model counts every script requested before LCP; with a
+  React + GSAP app of ~178 KB that is about 2.5–3.7 s on its slow-4G profile.
+- INP: no field data locally; TBT is the lab proxy. CLS ≤ 0.011 everywhere.
+- axe (wcag2a/aa, wcag21a/aa) on all 16 routes, desktop + mobile, after scrolling each page: 0
+  violations, 0 console errors (`e2e/smoke.spec.ts`).
+- Playwright: 60 passed, 4 skipped (desktop-only/mobile-only cases).
+- craft lint: 0 blocking, 2 warn, 3 info (unchanged from P6). craft audit: lint, typecheck,
+  test verified.
+- Screenshots `.review/p7/` (every route, desktop + mobile; OG images).
+
+**Not met**
+
+- Mobile performance ≥ 90 and LCP < 2.5 s: met on /work and some /about runs; home 82–86,
+  case studies 79–89 with LCP 2.7–3.7 s (simulated). Getting further means shipping less
+  JavaScript on first load (for example, moving GSAP-driven sections behind interaction or a
+  lighter animation runtime), which would change how the site feels; left for a decision.
+- Desktop CLS 0.011 comes from the stepped grain animation; under the 0.05 target.

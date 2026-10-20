@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SplitReveal } from "@/components/motion/SplitReveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { WorkIndex } from "@/components/work/WorkIndex";
+import { ProjectMedia } from "@/components/work/ProjectMedia";
 import { labProjects, workProjects } from "@/content/projects";
 
 export const metadata: Metadata = {
@@ -31,7 +32,15 @@ export default function Page() {
           </Link>
         </p>
       </header>
-      <WorkIndex projects={workProjects} />
+      <WorkIndex
+        projects={workProjects}
+        media={Object.fromEntries(
+          workProjects.map((p) => [
+            p.slug,
+            <ProjectMedia key={p.slug} project={p} sizes="(min-width: 768px) 50vw, 100vw" className="h-full w-full" />,
+          ]),
+        )}
+      />
     </>
   );
 }

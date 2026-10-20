@@ -5,7 +5,11 @@ import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";
 import { ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { Clock } from "./Clock";
-import { Menu, type MenuItem } from "./Menu";
+import dynamic from "next/dynamic";
+import type { MenuItem } from "./Menu";
+
+// The overlay loads right after hydration rather than with the first paint.
+const Menu = dynamic(() => import("./Menu").then((m) => m.Menu), { ssr: false });
 import { Magnetic } from "@/components/motion/Magnetic";
 import { cn } from "@/lib/cn";
 
@@ -52,9 +56,11 @@ export function Header({ name, items }: { name: string; items: MenuItem[] }) {
           href="/"
           data-transition-label="Index"
           className="col-span-2 flex flex-col leading-none md:col-span-4"
-          aria-label={`${name}, home`}
         >
-          <span className="font-display text-lg font-semibold tracking-[-0.02em]">{name}</span>
+          <span className="font-display text-lg font-semibold tracking-[-0.02em]">
+            {name}
+            <span className="sr-only">, home</span>
+          </span>
           <span className="t-label mt-1 hidden opacity-60 sm:block">AI software engineer</span>
         </Link>
         <div className="col-span-4 hidden justify-center md:flex">

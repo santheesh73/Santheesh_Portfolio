@@ -47,7 +47,7 @@ export function NextProject({ slug, title, pitch, position }: { slug: string; ti
           },
         })
         .fromTo(q("[data-fill]"), { scaleX: 0 }, { scaleX: 1, duration: 1 }, 0)
-        .fromTo(q("[data-title]"), { letterSpacing: "0.04em", opacity: 0.25, y: 40 }, { letterSpacing: "-0.045em", opacity: 1, y: 0, duration: 1 }, 0);
+        .fromTo(q("[data-title]"), { letterSpacing: "0.04em", opacity: 0.5, y: 40 }, { letterSpacing: "-0.045em", opacity: 1, y: 0, duration: 1 }, 0);
       return () => inputs.forEach((t) => window.removeEventListener(t, onInput));
     },
     { scope: root },

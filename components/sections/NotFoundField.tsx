@@ -7,8 +7,10 @@ import { gsap } from "@/lib/gsap";
 import { EASE } from "@/lib/motion";
 import { heroState, ENTROPY_REST } from "@/lib/heroState";
 import { prefersReducedMotion } from "@/lib/useReducedMotion";
-import { hasWebGL } from "@/lib/webgl";
-import { SignalStatic } from "@/components/webgl/SignalStatic";
+import { fieldMode } from "@/lib/webgl";
+const SignalStatic = dynamic(() => import("@/components/webgl/SignalStatic").then((m) => m.SignalStatic), {
+  ssr: false,
+});
 import { useTransitionRouter } from "@/components/providers/TransitionProvider";
 
 const SignalField = dynamic(() => import("@/components/webgl/SignalField"), { ssr: false });
@@ -29,7 +31,7 @@ export function NotFoundField() {
 
   useEffect(() => {
     const reduced = prefersReducedMotion();
-    setMode(reduced || !hasWebGL() ? "static" : "webgl");
+    setMode(fieldMode(reduced));
     heroState.active = true;
     heroState.entropy = reduced ? 0 : ENTROPY_REST;
     heroState.arrival = reduced ? 0 : 1;

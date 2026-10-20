@@ -8,7 +8,7 @@ import { SectionLabel } from "@/components/ui/SectionLabel";
 const MARKED = new Set(["component", "reliable"]);
 
 /**
- * Pinned manifesto. The sentence starts in --ink-3; each word turns --ink as
+ * Pinned manifesto. The sentence starts in grey (--ink-3-text, for contrast); each word turns --ink as
  * you scroll (read → decided). "component" and "reliable" get a cobalt
  * underline that draws in when they are reached.
  */
@@ -22,7 +22,8 @@ export function Manifesto({ sentence, source, index, total }: { sentence: string
       if (!el || prefersReducedMotion()) return;
       const q = gsap.utils.selector(el);
       const wordEls = q("[data-word]");
-      gsap.set(wordEls, { color: "var(--ink-3)" });
+      // start one step darker than --ink-3 so the unread words still pass AA for large text
+      gsap.set(wordEls, { color: "var(--ink-3-text)" });
       gsap.set(q("[data-underline]"), { scaleX: 0 });
 
       const tl = gsap.timeline({

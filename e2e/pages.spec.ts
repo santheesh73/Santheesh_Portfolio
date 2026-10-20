@@ -46,14 +46,15 @@ test("about and lab render real content", async ({ page }) => {
   // tiles stay hidden until they scroll into view (they snap onto the grid)
   await slop.evaluate((el) => el.scrollIntoView({ block: "center" }));
   await expect(slop).toBeVisible();
-  await expect(page.getByText("a11y/contrast")).toBeAttached();
+  await expect(page.getByRole("heading", { name: "a11y/contrast" })).toBeAttached();
 });
 
 test("404 compiles into → HOME and the link goes home", async ({ page }) => {
   const res = await page.goto("/nope");
   expect(res?.status()).toBe(404);
   await expect(page.getByRole("heading", { level: 1 })).toContainText("isn't part of the system");
-  await page.mouse.click(400, 300);
+  const field = page.getByRole("button", { name: "Compile the field into a link home" });
+  await field.click(); // the field loads after hydration; its button appears with it
   await expect(page.getByText("Click the field to go home.")).toBeVisible();
   await page.getByRole("link", { name: "Back to the index →" }).click();
   await expect(page).toHaveURL(/\/$/);
