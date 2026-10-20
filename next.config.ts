@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
   },
+  webpack(config) {
+    config.module.rules.push({ test: /\.glsl$/, type: "asset/source" });
+    return config;
+  },
   experimental: {
     optimizePackageImports: ["gsap"],
   },

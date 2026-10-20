@@ -91,3 +91,32 @@
 - Inline boot script imported a constant from a client module (rendered as a function stub).
 - Tailwind v4 `translate` utilities stacked with GSAP transforms on the curtain panels.
 - Header read the menu overlay as an ink section and went white on the home page.
+
+## P3 — Hero WebGL signal field (2026-10-20)
+
+**Built**
+- `components/webgl/SignalField.tsx` (R3F, orthographic pixel-space camera, `THREE.Points` + custom
+  `ShaderMaterial`), shaders in `components/webgl/shaders/*.glsl` (loaded as `asset/source`):
+  - targets: "SANTHEESH S" rendered to an offscreen canvas in the display face and sampled on a
+    dot-matrix grid (`lib/sampleText.ts`; never more cells than the particle budget);
+  - signal: 3D simplex → 2D curl-noise drift around each target, amplitude ∝ entropy;
+  - arrival: points fly in from across the viewport when the page is revealed;
+  - cursor: smoothed pointer repulsion that eases back when the pointer idles; weaker at low entropy;
+  - colour: share of cobalt points falls from ~42% (signal) to 8% (structure).
+- `Hero`: entropy scrubbed 0.84 → 0.00 by ScrollTrigger (pinned, +100% desktop / +70% mobile),
+  live caption `signal · entropy 0.84 → 0.00` that flips to `structure · locked`. HTML overlay:
+  headline (masked line reveal, real `<h1>` text with the name as sr-only), roles (scramble),
+  Tiruppur + live IST clock, "Open to roles & collaborations" chip, crosshairs, FIG.01 annotation.
+- Guards: DPR capped at 1.75; frameloop switched to `never` off-screen / hidden tab; particle budget
+  12k desktop, 7k low-power, 5.5k mobile, 3.5k low-power mobile; `next/dynamic({ ssr:false })` chunk.
+- Fallback `SignalStatic`: 2D canvas of the structured state for reduced motion or no WebGL.
+
+**Verified**
+- lint, typecheck, build; `pnpm test` 10 passed; Playwright 11 passed (adds: hero headline is text,
+  caption reaches 0.00 after one viewport of scroll, reduced motion renders the static field at 0.00).
+- Screenshots `.review/p3/`: arrival, rest, cursor repulsion, mid-scrub, structure, reduced motion.
+
+**Measured (to fix in P7)**
+- Initial JS on `/` (modern browsers, gzip, excluding the nomodule polyfill): ≈ 197 KB — over the
+  180 KB budget. React/Next runtime ≈ 101 KB; GSAP + plugins chunk ≈ 45 KB. The WebGL chunks
+  (three + R3F, ≈ 241 KB gzip) load lazily and are excluded.
