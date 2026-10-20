@@ -1,0 +1,232 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Design tokens. Components never hard-code colours: they use these
+   via Tailwind utilities (bg-paper, text-ink, border-rule, …) or var().
+   ------------------------------------------------------------------ */
+:root {
+  --paper: #f4f5f7;
+  --paper-2: #eceef2;
+  --sheet: #ffffff;
+  --ink: #0a0c14;
+  --ink-2: #474d60;
+  --ink-3: #8d93a5;
+  --rule: #dce0e8;
+  --signal: #2b45f5;
+  --signal-2: #c9d0ff;
+  --live: #0e9f6e;
+  --amber: #b7791f;
+
+  /* annotation text on paper needs AA: ink-3 is decorative-only, use this for small text */
+  --ink-3-text: #6b7183;
+
+  --gutter: clamp(16px, 2.2vw, 40px);
+  --col-gap: clamp(12px, 1.4vw, 24px);
+  --header-h: 64px;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-sheet: var(--sheet);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-ink-3-text: var(--ink-3-text);
+  --color-rule: var(--rule);
+  --color-signal: var(--signal);
+  --color-signal-2: var(--signal-2);
+  --color-live: var(--live);
+  --color-amber: var(--amber);
+
+  --font-display: var(--font-display-face), "Bricolage Grotesque", ui-sans-serif, sans-serif;
+  --font-body: var(--font-body-face), "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-face), "JetBrains Mono", ui-monospace, monospace;
+
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+
+  /* fluid type scale */
+  --text-hero: clamp(3.5rem, 17vw, 21rem);
+  --text-section: clamp(2.75rem, 7vw, 8.5rem);
+  --text-display-sm: clamp(2rem, 4vw, 4.25rem);
+  --text-lede: clamp(1.25rem, 1.6vw, 1.625rem);
+  --text-body: clamp(1.0625rem, 0.3vw + 1rem, 1.125rem);
+  --text-label: 0.75rem;
+
+  --ease-signal: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-structure: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    background: var(--paper);
+    color: var(--ink);
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: clip;
+  }
+  body {
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: 1.55;
+    overflow-x: clip;
+    min-height: 100dvh;
+    background: var(--paper);
+  }
+  ::selection {
+    background: var(--signal);
+    color: var(--sheet);
+  }
+  :focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+  }
+}
+
+@layer components {
+  /* 12-col blueprint grid container */
+  .grid-12 {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+    padding-inline: var(--gutter);
+  }
+  @media (max-width: 767px) {
+    .grid-12 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .t-hero {
+    font-family: var(--font-display);
+    font-size: var(--text-hero);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 0.88;
+  }
+  .t-section {
+    font-family: var(--font-display);
+    font-size: var(--text-section);
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 0.92;
+  }
+  .t-display-sm {
+    font-family: var(--font-display);
+    font-size: var(--text-display-sm);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 0.98;
+  }
+  .t-lede {
+    font-size: var(--text-lede);
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+  .t-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-label);
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+  .measure {
+    max-width: 65ch;
+  }
+
+  /* masked line used by SplitReveal */
+  .line-mask {
+    display: block;
+    overflow: clip;
+    padding-bottom: 0.06em;
+    margin-bottom: -0.06em;
+  }
+
+  /* crosshair registration mark */
+  .crosshair {
+    position: absolute;
+    width: 13px;
+    height: 13px;
+    pointer-events: none;
+  }
+  .crosshair::before,
+  .crosshair::after {
+    content: "";
+    position: absolute;
+    background: var(--ink);
+  }
+  .crosshair::before {
+    left: 6px;
+    top: 0;
+    width: 1px;
+    height: 13px;
+  }
+  .crosshair::after {
+    top: 6px;
+    left: 0;
+    height: 1px;
+    width: 13px;
+  }
+
+  .skip-link {
+    position: fixed;
+    left: var(--gutter);
+    top: 12px;
+    z-index: 200;
+    transform: translateY(-200%);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 10px 14px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .skip-link:focus-visible {
+    transform: none;
+  }
+}
+
+/* Reduced motion: show final states, kill CSS motion. JS paths check the media query too. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Hide split targets until GSAP has split them (prevents a flash of unmasked text).
+   Only when JS motion is on; a failsafe reveals them if JS never arrives. */
+html.js-motion [data-split=""] {
+  visibility: hidden;
+  animation: split-failsafe 0s linear 2.5s forwards;
+}
+@keyframes split-failsafe {
+  to {
+    visibility: visible;
+  }
+}
