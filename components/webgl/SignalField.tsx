@@ -24,7 +24,7 @@ function cssColor(name: string) {
 
 type Layout = { targets: Float32Array; rands: Float32Array; count: number; step: number };
 
-function buildLayout(width: number, height: number, lines: string[]): Layout {
+function buildLayout(width: number, height: number, lines: string[], offset?: number): Layout {
   const budget = particleBudget(width);
   const narrow = width < 768;
   const s = sampleText({
@@ -35,7 +35,7 @@ function buildLayout(width: number, height: number, lines: string[]): Layout {
     target: budget,
     fill: narrow ? 0.9 : 0.94,
     heightShare: narrow ? 0.5 : 0.42,
-    offsetY: height * (narrow ? 0.14 : 0.12),
+    offsetY: height * (offset ?? (narrow ? 0.14 : 0.12)),
   });
   // One particle per grid cell; extra budget doubles up on random cells.
   const count = Math.min(budget, Math.max(s.count, 1) * 2);
@@ -50,7 +50,7 @@ function buildLayout(width: number, height: number, lines: string[]): Layout {
   return { targets, rands, count, step: s.step };
 }
 
-function Points({ lines }: { lines: string[] }) {
+function Points({ lines, offset }: { lines: string[]; offset?: number }) {
   const { size, viewport } = useThree();
   const [layout, setLayout] = useState<Layout | null>(null);
   const mouse = useRef({ x: 0, y: 0, tx: 0, ty: 0, strength: 0, last: 0 });
@@ -62,13 +62,13 @@ function Points({ lines }: { lines: string[] }) {
       try {
         await document.fonts.load(`700 100px ${displayFamily()}`);
       } catch {}
-      if (!cancelled) setLayout(buildLayout(size.width, size.height, lines));
+      if (!cancelled) setLayout(buildLayout(size.width, size.height, lines, offset));
     }, 120);
     return () => {
       cancelled = true;
       window.clearTimeout(id);
     };
-  }, [size.width, size.height, lines]);
+  }, [size.width, size.height, lines, offset]);
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
@@ -158,7 +158,16 @@ function LoopGate() {
   return null;
 }
 
-export default function SignalField({ lines, onReady }: { lines: string[]; onReady?: () => void }) {
+export default function SignalField({
+  lines,
+  offset,
+  onReady,
+}: {
+  lines: string[];
+  /** Vertical offset of the word block, as a share of the canvas height. */
+  offset?: number;
+  onReady?: () => void;
+}) {
   return (
     <Canvas
       orthographic
@@ -170,7 +179,7 @@ export default function SignalField({ lines, onReady }: { lines: string[]; onRea
       aria-hidden="true"
     >
       <LoopGate />
-      <Points lines={lines} />
+      <Points lines={lines} offset={offset} />
     </Canvas>
   );
 }

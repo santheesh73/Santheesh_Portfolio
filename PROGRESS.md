@@ -157,3 +157,41 @@
 
 **Measured (to fix in P7)**
 - `/` First Load JS reported by Next: 217 KB (was 197 KB est.). Still over the 180 KB budget.
+
+## P5 — Inner pages
+
+**Built**
+- `/work` (`WorkIndex`): list rows with a media preview that trails the pointer, or a grid of
+  plates; switching view and filter (All / AI products / Developer tools / Platforms, with counts)
+  re-flows the same elements with GSAP Flip. Grid plates use the shared-element transition; list
+  rows use the curtain. Sticky filter bar; buttons expose `aria-pressed`.
+- `/work/[slug]`: case hero (label, title, pitch, media as the Flip target, media credit), metadata
+  grid (status chip, category, year if known, team/role only when sourced, stack, context, links;
+  hidden repos are not linked), MDX body with a sticky section rail (reading progress line, active
+  section, Lenis jump links), architecture diagrams that draw on scroll (DrawSVG scrub: node
+  outlines column by column, then edges; dashed model strokes fade instead), and `NextProject`:
+  a 200svh section where the next title compiles from loose to tight and a rule fills; reaching the
+  end fires the curtain into the next case (infinite loop through `/work`). Reduced motion: a link.
+- `/about`: bio, contact facts with live IST, "How I work" (three principles, a real 01–03 sequence),
+  current focus, what I build. Portrait, timeline and resume stay hidden until supplied (TODO).
+- `/lab`: dense snap grid (tiles arrive loose and lock onto the grid): the Orchestrate skill plate,
+  Frontend Craft's four parts, and the 20 Slop Lint rules copied from the craftlyst repo
+  (`content/lab.ts`, ids + descriptions, source noted on the page; ids scramble on hover).
+- `not-found`: the particle field spells "404" as loose signal; scroll, swipe, click or Enter compiles
+  it to "→ HOME" (entropy → 0.00), then the field links home. Static fallback; text link always there.
+- `lib/webgl.ts` (`hasWebGL`), `offset` prop on `SignalField` / `SignalStatic`.
+
+**Fixed during review**
+- Arriving on a case study could fire its next-project transition at once (stale scroll position
+  during the route change). It now needs real user scroll input and a pass through the section.
+- Lab tiles are hidden until they snap in, so tests scroll them into view first.
+- Playwright limited to 2 workers: WebGL runs in SwiftShader here and starved the timing tests.
+
+**Verified**
+- lint, typecheck, build; Playwright 24 passed (adds: /work filter + grid toggle, case study rail
+  and next-project loop, about/lab content, 404 compile + link home).
+- Screenshots `.review/p5/` (every route, desktop + mobile; `frames/` through the Pulse case study).
+
+**Left**
+- `/lab` has one lab project, so the grid leans on Frontend Craft internals; more lab entries need
+  real projects from Santheesh.

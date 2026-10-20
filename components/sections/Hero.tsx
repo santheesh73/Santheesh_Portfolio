@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { hasWebGL } from "@/lib/webgl";
 import { useEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { EASE } from "@/lib/motion";
@@ -21,15 +22,6 @@ type Props = {
   roles: string[];
   location: string;
 };
-
-function hasWebGL(): boolean {
-  try {
-    const c = document.createElement("canvas");
-    return Boolean(c.getContext("webgl2") || c.getContext("webgl"));
-  } catch {
-    return false;
-  }
-}
 
 /**
  * Hero. A particle field spells the name as loose signal; scrolling compiles it:

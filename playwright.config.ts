@@ -4,6 +4,8 @@ const PORT = Number(process.env.PORT ?? 3100);
 
 export default defineConfig({
   testDir: "./e2e",
+  // WebGL runs in software here (SwiftShader); more workers starve the animations.
+  workers: 2,
   timeout: 60_000,
   use: {
     baseURL: `http://localhost:${PORT}`,

@@ -44,7 +44,7 @@ test("route curtain covers, navigates, lifts; back restores scroll", async ({ pa
     document.querySelector<HTMLAnchorElement>("main a[href='/work']")!.click();
   });
   await expect(page).toHaveURL(/\/work$/);
-  await expect(page.locator("h1")).toHaveText("Work");
+  await expect(page.locator("h1")).toHaveText("Work.");
   await expect(page.locator("[data-panel]").first()).toBeHidden({ timeout: 2000 });
   expect(
     await page.evaluate(
@@ -78,7 +78,7 @@ test("menu opens, traps focus, closes on Escape", async ({ page }) => {
 
 test("G toggles the blueprint grid", async ({ page }) => {
   await page.addInitScript(() => sessionStorage.setItem("ss-booted", "1"));
-  await page.goto("/");
+  await page.goto("/", { waitUntil: "networkidle" }); // key listener attaches on hydration
   const grid = page.locator("[data-blueprint]");
   await expect(grid).toHaveAttribute("data-blueprint", "off");
   await page.keyboard.press("g");

@@ -7,7 +7,7 @@ import { displayFamily, sampleText } from "@/lib/sampleText";
  * Fallback for reduced motion or no WebGL: the field already in its
  * "structure" state, drawn once on a 2D canvas. No animation.
  */
-export function SignalStatic({ lines }: { lines: string[] }) {
+export function SignalStatic({ lines, offset }: { lines: string[]; offset?: number }) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export function SignalStatic({ lines }: { lines: string[] }) {
         target: narrow ? 4000 : 9000,
         fill: narrow ? 0.9 : 0.94,
         heightShare: narrow ? 0.5 : 0.42,
-        offsetY: rect.height * (narrow ? 0.14 : 0.12),
+        offsetY: rect.height * (offset ?? (narrow ? 0.14 : 0.12)),
       });
       const css = getComputedStyle(document.documentElement);
       const ink = css.getPropertyValue("--ink").trim();
@@ -57,7 +57,7 @@ export function SignalStatic({ lines }: { lines: string[] }) {
       cancelled = true;
       window.removeEventListener("resize", onResize);
     };
-  }, [lines]);
+  }, [lines, offset]);
 
   return <canvas ref={ref} aria-hidden="true" className="absolute inset-0 h-full w-full" />;
 }
