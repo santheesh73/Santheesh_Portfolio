@@ -352,3 +352,7 @@ Walked every route on phone (390) and desktop (1440), light and dark, frame by f
 - lint, typecheck, unit tests, build. Playwright 64 passed (adds header test; next-project test
   now checks the footer is reachable and the link works). Home JS 176.8 KB gzip.
 - Screenshots `.review/p9/` (+ `dark/`, `frames/`).
+
+- Follow-up: the header's ink tone over the footer was driven by cached ScrollTrigger positions
+  and missed the short footer at the page end. It is now measured live from section rects on
+  scroll, and the footer fills the viewport (100svh).

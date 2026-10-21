@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { Clock } from "./Clock";
 import dynamic from "next/dynamic";
 import type { MenuItem } from "./Menu";
@@ -33,31 +32,35 @@ export function Header({ name, items }: { name: string; items: MenuItem[] }) {
   const [scrolled, setScrolled] = useState(false);
   const bar = useRef<HTMLElement>(null);
 
+  // Scroll state, measured live (no cached trigger positions, so late layout
+  // shifts can't leave it stale): solid ground once scrolled, ink tone while
+  // the bar's lower edge sits over an ink section.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [pathname]);
-
-  useGSAP(
-    () => {
-      setDark(false);
+    let frame = 0;
+    const measure = () => {
+      frame = 0;
+      setScrolled(window.scrollY > 24);
+      const probe = (bar.current?.offsetHeight ?? 64) - 8;
       const sections = document.querySelectorAll<HTMLElement>("main [data-tone='ink'], footer[data-tone='ink']");
-      const triggers = [...sections].map((s) =>
-        ScrollTrigger.create({
-          trigger: s,
-          start: "top top+=32",
-          end: "bottom top+=32",
-          onToggle: (self) => setDark(self.isActive),
-          // header triggers are created before the page pins; measure after them
-          refreshPriority: -1,
+      setDark(
+        [...sections].some((s) => {
+          const r = s.getBoundingClientRect();
+          return r.top <= probe && r.bottom > probe;
         }),
       );
-      return () => triggers.forEach((t) => t.kill());
-    },
-    { dependencies: [pathname] },
-  );
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(measure);
+    };
+    measure();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [pathname]);
 
   return (
     <>

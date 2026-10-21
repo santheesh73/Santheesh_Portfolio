@@ -51,7 +51,7 @@ export function Contact({ heading, email, github, linkedin, motto, location, hom
       aria-labelledby="contact-title"
       className="relative z-[2] bg-ink text-paper"
     >
-      <div className="grid-12 min-h-[92svh] content-between gap-y-16 pt-28 pb-8 md:pt-36">
+      <div className="grid-12 min-h-[100svh] content-between gap-y-16 pt-28 pb-8 md:pt-36">
         <div className="col-span-full flex flex-col gap-10">
           <SectionLabel
             tone="paper"
