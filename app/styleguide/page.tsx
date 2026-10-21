@@ -31,19 +31,19 @@ const TYPE = [
   {
     name: "Hero",
     cls: "t-hero",
-    spec: "clamp(3.5rem, 17vw, 21rem) / 0.88 / -0.04em",
+    spec: "clamp(3rem, 11vw, 12rem) / 0.88 / -0.04em",
     sample: "Signal",
   },
   {
     name: "Section",
     cls: "t-section",
-    spec: "clamp(2.75rem, 7vw, 8.5rem) / 0.92",
+    spec: "clamp(2.25rem, 5vw, 5.5rem) / 0.92",
     sample: "The Pipeline",
   },
   {
     name: "Display S",
     cls: "t-display-sm",
-    spec: "clamp(2rem, 4vw, 4.25rem) / 0.98",
+    spec: "clamp(1.875rem, 3.4vw, 3.5rem) / 0.98",
     sample: "Read → Decide",
   },
   {

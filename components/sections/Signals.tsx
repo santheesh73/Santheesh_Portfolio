@@ -37,7 +37,7 @@ export function Signals({
           {rows.map((r) => (
             <div key={r.k} className="border-b border-rule py-6 pr-6 odd:border-r">
               <dt className="t-label text-ink-2">{r.k}</dt>
-              <dd className="mt-3 font-mono text-[clamp(3.5rem,8vw,7.5rem)] leading-none font-medium tracking-[-0.04em] tabular-nums">
+              <dd className="mt-3 font-mono text-[clamp(3rem,6vw,5.5rem)] leading-none font-medium tracking-[-0.04em] tabular-nums">
                 <Scramble
                   as="span"
                   text={r.v}

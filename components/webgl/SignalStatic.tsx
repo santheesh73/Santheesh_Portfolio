@@ -1,5 +1,6 @@
 "use client";
 
+import { onThemeChange } from "@/lib/theme";
 import { useEffect, useRef } from "react";
 import { displayFamily, sampleText } from "@/lib/sampleText";
 
@@ -53,8 +54,10 @@ export function SignalStatic({ lines, offset }: { lines: string[]; offset?: numb
     draw();
     const onResize = () => draw();
     window.addEventListener("resize", onResize);
+    const stopTheme = onThemeChange(draw);
     return () => {
       cancelled = true;
+      stopTheme();
       window.removeEventListener("resize", onResize);
     };
   }, [lines, offset]);

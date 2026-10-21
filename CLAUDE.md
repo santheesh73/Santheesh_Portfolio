@@ -31,6 +31,9 @@ Playwright uses the preinstalled Chromium at `/opt/pw-browsers/chromium` (pinned
 - Every animated component checks `prefersReducedMotion()` and renders the final state instantly.
 - No hard-coded colours in components: use `bg-paper`, `text-ink`, `text-signal`, `border-rule`, …
   `--ink-3` is decorative only; small annotation text uses `text-ink-3-text` (AA contrast).
+- Light and dark themes come from the same tokens (`styles/globals.css`): system preference by default,
+  `html[data-theme]` when the header toggle stored a choice (`lib/theme.ts`). Large ink surfaces add
+  `tone-ink` (or `data-tone="ink"`) so they stay near-black in dark mode. Canvas code re-reads tokens via `onThemeChange`.
 - Cobalt (`signal`) = model/AI/probabilistic things only. `live` / `amber` are semantic only.
 - Pages are server components; animated pieces are small `'use client'` islands.
 - Radius 0–6px; pills only for status chips and buttons.

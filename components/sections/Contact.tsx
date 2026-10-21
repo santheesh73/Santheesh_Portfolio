@@ -72,7 +72,7 @@ export function Contact({ heading, email, github, linkedin, motto, location, hom
                 href={`mailto:${email}`}
                 data-transition="none"
                 data-cursor="Write ↗"
-                className="font-display text-[clamp(1.5rem,3.6vw,3.25rem)] font-semibold tracking-[-0.02em] break-all select-all hover:text-signal-2"
+                className="font-display text-[clamp(1.375rem,2.8vw,2.5rem)] font-semibold tracking-[-0.02em] break-all select-all hover:text-signal-2"
               >
                 {email}
               </a>
@@ -97,7 +97,7 @@ export function Contact({ heading, email, github, linkedin, motto, location, hom
                     target="_blank"
                     rel="noreferrer"
                     data-cursor="Open ↗"
-                    className="group inline-flex items-baseline gap-3 font-display text-[clamp(2.5rem,6vw,5.5rem)] leading-[0.95] font-semibold tracking-[-0.035em]"
+                    className="group inline-flex items-baseline gap-3 font-display text-[clamp(2.25rem,4.5vw,4rem)] leading-[0.95] font-semibold tracking-[-0.035em]"
                   >
                     {l.label}
                     <span

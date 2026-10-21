@@ -38,7 +38,7 @@ for (const route of ROUTES) {
       }
       window.scrollTo(0, 0);
     });
-    await page.waitForTimeout(400);
+    await page.waitForTimeout(1200); // let the last snap-in tweens finish before measuring contrast
 
     const axe = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])

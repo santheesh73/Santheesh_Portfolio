@@ -1,5 +1,6 @@
 "use client";
 
+import { onThemeChange } from "@/lib/theme";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
@@ -117,6 +118,15 @@ function Points({ lines, offset }: { lines: string[]; offset?: number }) {
     [],
   );
   useEffect(() => () => material.dispose(), [material]);
+  // light/dark switch: re-read the ink and cobalt tokens
+  useEffect(
+    () =>
+      onThemeChange(() => {
+        material.uniforms.uInk!.value = cssColor("--ink");
+        material.uniforms.uSignal!.value = cssColor("--signal");
+      }),
+    [material],
+  );
 
   useFrame((state, delta) => {
     const u = material.uniforms;

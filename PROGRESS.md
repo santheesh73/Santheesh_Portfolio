@@ -304,3 +304,24 @@
   JavaScript on first load (for example, moving GSAP-driven sections behind interaction or a
   lighter animation runtime), which would change how the site feels; left for a decision.
 - Desktop CLS 0.011 comes from the stepped grain animation; under the 0.05 target.
+
+## P8 — Smaller display type, dark mode
+
+**Changed**
+
+- Display type scaled down (it dominated at desktop widths): page titles (`--text-hero`)
+  17vw / 21rem max → 11vw / 12rem; section titles 7vw / 8.5rem → 5vw / 5.5rem; hero headline
+  and other `t-display-sm` 4.25rem → 3.5rem max. Also smaller: next-project title (17rem →
+  10rem), menu links, work-index rows and plate titles, stack marquee, GitHub numbers, contact
+  links and email, the route-curtain label, lab tile titles.
+- Dark mode: follows the system theme; the header toggle (Dark / Light) stores a choice in
+  localStorage, applied before paint. Same tokens, dark values (cobalt lifted to #7B8FFF for
+  contrast, still the only accent). Footer, menu, preloader, curtain and the lab card stay
+  near-black instead of inverting. The hero field and static canvas recolour on switch.
+
+**Verified**
+
+- lint, typecheck, unit tests, build. Playwright 62 passed, 4 skipped (adds: toggle switches,
+  persists across reload, no axe contrast issues in dark).
+- Initial JS on home 178.3 KB gzip (budget 180).
+- Screenshots `.review/p8/` (light) and `.review/p8/dark/`.

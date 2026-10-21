@@ -19,10 +19,64 @@
 
   /* annotation text on paper needs AA: ink-3 is decorative-only, use this for small text */
   --ink-3-text: #5f6577;
+  color-scheme: light;
 
   --gutter: clamp(16px, 2.2vw, 40px);
   --col-gap: clamp(12px, 1.4vw, 24px);
   --header-h: 64px;
+}
+
+/* ------------------------------------------------------------------
+   Dark theme. Follows the system unless the header toggle stored a
+   choice (html[data-theme], set before paint by the boot script).
+   Cobalt stays the only accent, lifted for contrast on the dark ground.
+   ------------------------------------------------------------------ */
+:root[data-theme="dark"] {
+  --paper: #0c0e14;
+  --paper-2: #11141b;
+  --sheet: #141821;
+  --ink: #e8ebf1;
+  --ink-2: #a3aabb;
+  --ink-3: #4a5064;
+  --ink-3-text: #8a91a4;
+  --rule: #232837;
+  --signal: #7b8fff;
+  --signal-2: #1f2860;
+  --live: #34c58e;
+  --amber: #e2a84b;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+  --paper: #0c0e14;
+  --paper-2: #11141b;
+  --sheet: #141821;
+  --ink: #e8ebf1;
+  --ink-2: #a3aabb;
+  --ink-3: #4a5064;
+  --ink-3-text: #8a91a4;
+  --rule: #232837;
+  --signal: #7b8fff;
+  --signal-2: #1f2860;
+  --live: #34c58e;
+  --amber: #e2a84b;
+  color-scheme: dark;
+  }
+}
+
+/* Ink surfaces (footer, menu, preloader, curtain, lab card) stay deep in dark mode
+   instead of inverting into a bright slab: they keep light text on near-black. */
+:root[data-theme="dark"] :is([data-tone="ink"], .tone-ink) {
+  --ink: #05060a;
+  --paper: #e8ebf1;
+  --signal-2: #c9d0ff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) :is([data-tone="ink"], .tone-ink) {
+  --ink: #05060a;
+  --paper: #e8ebf1;
+  --signal-2: #c9d0ff;
+  }
 }
 
 @theme inline {
@@ -48,9 +102,9 @@
   --radius-md: 6px;
 
   /* fluid type scale */
-  --text-hero: clamp(3.5rem, 17vw, 21rem);
-  --text-section: clamp(2.75rem, 7vw, 8.5rem);
-  --text-display-sm: clamp(2rem, 4vw, 4.25rem);
+  --text-hero: clamp(3rem, 11vw, 12rem);
+  --text-section: clamp(2.25rem, 5vw, 5.5rem);
+  --text-display-sm: clamp(1.875rem, 3.4vw, 3.5rem);
   --text-lede: clamp(1.25rem, 1.6vw, 1.625rem);
   --text-body: clamp(1.0625rem, 0.3vw + 1rem, 1.125rem);
   --text-label: 0.75rem;

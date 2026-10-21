@@ -41,6 +41,8 @@ async function main() {
     const ctx = await browser.newContext({
       viewport: { width: vp.width, height: vp.height },
       deviceScaleFactor: 1,
+      // COLOR_SCHEME=dark pnpm shots p8/dark / … captures the dark theme
+      colorScheme: process.env.COLOR_SCHEME === "dark" ? "dark" : "light",
       isMobile: vp.isMobile,
       hasTouch: vp.isMobile,
     });

@@ -232,8 +232,8 @@ export function WorkIndex({
                   className={cn(
                     "block font-display font-semibold tracking-[-0.035em] transition-colors",
                     view === "list"
-                      ? "text-[clamp(2.25rem,6vw,6rem)] leading-[0.95] group-hover:text-signal group-focus-visible:text-signal"
-                      : "mt-1 text-[clamp(2rem,3.4vw,3.5rem)] leading-none",
+                      ? "text-[clamp(2rem,4.5vw,4.5rem)] leading-[0.95] group-hover:text-signal group-focus-visible:text-signal"
+                      : "mt-1 text-[clamp(1.75rem,2.8vw,2.75rem)] leading-none",
                   )}
                 >
                   {p.title}
@@ -263,7 +263,7 @@ export function WorkIndex({
       <div
         ref={preview}
         aria-hidden="true"
-        className="pointer-events-none fixed top-0 left-0 z-30 hidden aspect-[16/10] w-[min(26vw,380px)] overflow-hidden border border-rule bg-sheet opacity-0 shadow-[0_24px_60px_-30px_var(--ink)] md:block"
+        className="pointer-events-none fixed top-0 left-0 z-30 hidden aspect-[16/10] w-[min(26vw,380px)] overflow-hidden border border-rule bg-sheet opacity-0 shadow-[0_24px_60px_-30px_rgb(0_0_0/0.45)] md:block"
       >
         {projects.map((p) => (
           <div

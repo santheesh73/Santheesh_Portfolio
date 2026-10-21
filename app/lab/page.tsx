@@ -57,7 +57,7 @@ export default function Page() {
                 <Chip status={p.status} />
                 <span className="t-label text-ink-2">{p.stack.join(" · ")}</span>
               </div>
-              <p className="font-display text-[clamp(2rem,4vw,3.5rem)] leading-none font-semibold tracking-[-0.035em] group-hover:text-signal">
+              <p className="font-display text-[clamp(1.75rem,3vw,2.75rem)] leading-none font-semibold tracking-[-0.035em] group-hover:text-signal">
                 {p.title}
               </p>
               <p className="max-w-[48ch] text-ink-2">{p.pitch}</p>
@@ -68,7 +68,7 @@ export default function Page() {
         <section
           data-tile
           aria-labelledby="craft-parts"
-          className="col-span-full flex flex-col justify-between gap-6 bg-ink p-5 text-paper md:col-span-4 md:row-span-2 md:p-6"
+          className="tone-ink col-span-full flex flex-col justify-between gap-6 bg-ink p-5 text-paper md:col-span-4 md:row-span-2 md:p-6"
         >
           <div className="flex flex-col gap-3">
             <p className="t-label text-paper/60">Frontend Craft · internals</p>

@@ -81,7 +81,7 @@ export function ProjectPlate({
             {mediaNode}
           </div>
         </div>
-        <div className="relative mt-5 font-display text-[clamp(2.75rem,6.4vw,7rem)] leading-[0.9] font-semibold tracking-[-0.04em] text-ink">
+        <div className="relative mt-5 font-display text-[clamp(2.25rem,4.6vw,5rem)] leading-[0.9] font-semibold tracking-[-0.04em] text-ink">
           <RollText text={project.title} />
           <span className="sr-only">. View case study</span>
         </div>

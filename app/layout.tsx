@@ -12,6 +12,7 @@ import { Grain } from "@/components/layout/Grain";
 import { BlueprintGrid } from "@/components/layout/BlueprintGrid";
 import { Preloader } from "@/components/sections/Preloader";
 import { Contact } from "@/components/sections/Contact";
+import { THEME_KEY } from "@/lib/theme";
 import { BOOT_KEY } from "@/lib/boot";
 import { profile } from "@/content/profile";
 import { workProjects, labProjects } from "@/content/projects";
@@ -44,12 +45,15 @@ const personLd = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F4F5F7",
-  colorScheme: "light",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F4F5F7" },
+    { media: "(prefers-color-scheme: dark)", color: "#0C0E14" },
+  ],
+  colorScheme: "light dark",
 };
 
-// Runs before paint: motion-only CSS unless reduced motion; skip the preloader on return visits.
-const boot = `try{var d=document.documentElement;if(!matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('js-motion');if(sessionStorage.getItem('${BOOT_KEY}'))d.classList.add('booted')}catch(e){}`;
+// Runs before paint: stored theme choice; motion-only CSS unless reduced motion; skip the preloader on return visits.
+const boot = `try{var d=document.documentElement,t=localStorage.getItem('${THEME_KEY}');if(t==='light'||t==='dark')d.dataset.theme=t;if(!matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('js-motion');if(sessionStorage.getItem('${BOOT_KEY}'))d.classList.add('booted')}catch(e){}`;
 
 const MENU: MenuItem[] = [
   {

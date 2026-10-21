@@ -63,7 +63,7 @@ export function NextProject({ slug, title, pitch, position }: { slug: string; ti
         <Link href={href} data-transition-label={title} data-cursor="Next" className="block">
           <span
             data-title
-            className="block font-display text-[clamp(3.5rem,15vw,17rem)] leading-[0.88] font-semibold tracking-[-0.045em] break-words"
+            className="block font-display text-[clamp(3rem,9vw,10rem)] leading-[0.88] font-semibold tracking-[-0.045em] break-words"
           >
             {title}
           </span>

@@ -10,6 +10,7 @@ import type { MenuItem } from "./Menu";
 
 // The overlay loads right after hydration rather than with the first paint.
 const Menu = dynamic(() => import("./Menu").then((m) => m.Menu), { ssr: false });
+import { ThemeToggle } from "./ThemeToggle";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { cn } from "@/lib/cn";
 
@@ -66,7 +67,8 @@ export function Header({ name, items }: { name: string; items: MenuItem[] }) {
         <div className="col-span-4 hidden justify-center md:flex">
           <Clock className="opacity-80" />
         </div>
-        <div className="col-span-2 flex justify-end md:col-span-4">
+        <div className="col-span-2 flex items-center justify-end gap-5 md:col-span-4 md:gap-8">
+          <ThemeToggle />
           <Magnetic>
             <button
               type="button"

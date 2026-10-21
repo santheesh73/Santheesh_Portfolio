@@ -315,10 +315,10 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
         style={{ pointerEvents: "none" }}
       >
         <div data-panel className="absolute inset-0 bg-signal" />
-        <div data-panel className="absolute inset-0 flex items-center justify-center bg-ink">
+        <div data-panel className="tone-ink absolute inset-0 flex items-center justify-center bg-ink">
           <span
             ref={label}
-            className="px-4 text-center font-mono text-[clamp(2.5rem,9vw,9rem)] leading-none font-medium tracking-[-0.02em] text-paper"
+            className="px-4 text-center font-mono text-[clamp(2.25rem,6vw,6rem)] leading-none font-medium tracking-[-0.02em] text-paper"
           />
         </div>
       </div>

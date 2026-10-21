@@ -164,7 +164,7 @@ export function Preloader({ log }: { log: string[] }) {
   if (gone) return null;
 
   return (
-    <div ref={root} data-preloader aria-hidden="true" className="fixed inset-0 z-[130]">
+    <div ref={root} data-preloader aria-hidden="true" className="tone-ink fixed inset-0 z-[130]">
       <div data-half="top" className="absolute inset-x-0 top-0 h-1/2 bg-ink" />
       <div data-half="bottom" className="absolute inset-x-0 bottom-0 h-1/2 bg-ink" />
       <div className="absolute inset-0 flex flex-col justify-between p-[var(--gutter)] text-paper">

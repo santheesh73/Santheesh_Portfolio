@@ -84,3 +84,27 @@ test("G toggles the blueprint grid", async ({ page }) => {
   await page.keyboard.press("g");
   await expect(grid).toHaveAttribute("data-blueprint", "on");
 });
+
+test("theme toggle switches to dark, remembers it, and dark mode has no axe contrast issues", async ({
+  page,
+}) => {
+  await page.addInitScript(() => sessionStorage.setItem("ss-booted", "1"));
+  await page.goto("/about");
+  await page.waitForLoadState("networkidle");
+  const html = page.locator("html");
+  await page.getByRole("button", { name: /switch to dark theme/i }).click();
+  await expect(html).toHaveAttribute("data-theme", "dark");
+  const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  expect(bg).toBe("rgb(12, 14, 20)");
+  await page.reload();
+  await expect(html).toHaveAttribute("data-theme", "dark");
+  await page.waitForTimeout(1500);
+  const { default: AxeBuilder } = await import("@axe-core/playwright");
+  const axe = await new AxeBuilder({ page })
+    .withRules(["color-contrast"])
+    .exclude("canvas")
+    .analyze();
+  expect(axe.violations.map((v) => v.nodes.map((n) => n.target.join(" ")))).toEqual([]);
+  await page.getByRole("button", { name: /switch to light theme/i }).click();
+  await expect(html).toHaveAttribute("data-theme", "light");
+});

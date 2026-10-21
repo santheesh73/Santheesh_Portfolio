@@ -137,7 +137,7 @@ export function Menu({
       aria-hidden={!open}
       inert={!open}
       data-tone="ink"
-      className="invisible fixed inset-0 z-[99] bg-ink text-paper"
+      className="tone-ink invisible fixed inset-0 z-[99] bg-ink text-paper"
     >
       <div className="grid-12 h-full content-center gap-y-10 pt-[var(--header-h)] pb-10">
         <nav aria-label="Primary" className="col-span-full md:col-span-7">
@@ -154,7 +154,7 @@ export function Menu({
                       onMouseEnter={() => setActive(i)}
                       onFocus={() => setActive(i)}
                       className={cn(
-                        "font-display text-[clamp(3.75rem,10vw,9.5rem)] leading-[0.9] font-semibold tracking-[-0.04em] transition-colors duration-300",
+                        "font-display text-[clamp(3rem,7vw,6.5rem)] leading-[0.9] font-semibold tracking-[-0.04em] transition-colors duration-300",
                         active === i ? "text-paper" : "text-paper/35",
                         "hover:text-paper focus-visible:text-paper",
                       )}

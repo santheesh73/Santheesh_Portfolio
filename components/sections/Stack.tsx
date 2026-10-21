@@ -114,7 +114,7 @@ export function Stack({
                             onBlur={() => setTool(null)}
                             data-cursor-tone={layer.id === "ai" ? "signal" : undefined}
                             className={cn(
-                              "font-display text-[clamp(2.25rem,5.4vw,5.75rem)] leading-none font-semibold tracking-[-0.035em] whitespace-nowrap transition-colors duration-300",
+                              "font-display text-[clamp(2rem,4vw,4.25rem)] leading-none font-semibold tracking-[-0.035em] whitespace-nowrap transition-colors duration-300",
                               on ? (layer.id === "ai" ? "text-signal" : "text-ink") : tool ? "text-ink-3" : "text-ink",
                             )}
                           >
