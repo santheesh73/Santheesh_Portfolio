@@ -325,3 +325,30 @@
   persists across reload, no axe contrast issues in dark).
 - Initial JS on home 178.3 KB gzip (budget 180).
 - Screenshots `.review/p8/` (light) and `.review/p8/dark/`.
+
+## P9 — UI/UX pass
+
+Walked every route on phone (390) and desktop (1440), light and dark, frame by frame.
+
+**Fixed**
+
+- Header: transparent over the top of the page, then a solid ground and hairline once scrolled,
+  so text no longer runs under the wordmark. Over ink sections and the open menu it takes the
+  ink tone (also fixes dark-mode header text going dark-on-dark over the menu and footer).
+- Desktop header gets Work / About / Lab links with the current page marked (`aria-current`).
+- Case studies no longer jump to the next project when you scroll to the end: the auto-navigation
+  made the contact footer unreachable. The next-project section is shorter (150svh) and its
+  title is the link ("Open the case study →").
+- Tap targets: small text links (section links, "All 9 projects", GitHub profile, repo/live
+  links, about facts, back to top, 404 link) get a ~40px hit area (`.hit`); the case-study
+  section rail links are taller.
+- /work on mobile: the filter bar no longer pins over the list (it took a quarter of the screen).
+- Mobile menu shows the live IST clock it promised; contact heading scaled down.
+- Spec-plate annotation text minimum raised from 8px to 10px.
+- Keyboard focus into the work reel measures the pin position live (was stale right after load).
+
+**Verified**
+
+- lint, typecheck, unit tests, build. Playwright 64 passed (adds header test; next-project test
+  now checks the footer is reachable and the link works). Home JS 176.8 KB gzip.
+- Screenshots `.review/p9/` (+ `dark/`, `frames/`).

@@ -19,7 +19,7 @@ export function SpecPlate({ project, className }: { project: Project; className?
         backgroundPosition: "-1px -1px",
       }}
     >
-      <div className="flex items-start justify-between gap-4 font-mono text-[clamp(8px,0.8vw,11px)] tracking-[0.12em] text-ink-2 uppercase">
+      <div className="flex items-start justify-between gap-4 font-mono text-[clamp(10px,0.8vw,11px)] tracking-[0.12em] text-ink-2 uppercase">
         <span>Spec plate — {project.slug}</span>
         <span>{project.stack.slice(0, 4).join(" · ")}</span>
       </div>
@@ -28,9 +28,9 @@ export function SpecPlate({ project, className }: { project: Project; className?
           <ArchitectureDiagram architecture={project.architecture} title={project.title} compact />
         </div>
       ) : (
-        <p className="max-w-[30ch] font-mono text-[clamp(10px,1.1vw,14px)] text-ink-2">{project.summary}</p>
+        <p className="max-w-[30ch] font-mono text-[clamp(11px,1.1vw,14px)] text-ink-2">{project.summary}</p>
       )}
-      <div className="flex items-end justify-between gap-4 font-mono text-[clamp(8px,0.8vw,11px)] tracking-[0.12em] text-ink-2 uppercase">
+      <div className="flex items-end justify-between gap-4 font-mono text-[clamp(10px,0.8vw,11px)] tracking-[0.12em] text-ink-2 uppercase">
         <span>{CATEGORY_LABEL[project.category]}</span>
         <span>{project.architecture ? "Architecture" : "Summary"}</span>
       </div>

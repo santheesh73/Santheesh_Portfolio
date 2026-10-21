@@ -124,7 +124,7 @@ export function WorkIndex({
 
   return (
     <div ref={root}>
-      <div className="grid-12 sticky top-[var(--header-h)] z-20 gap-y-4 border-b border-rule bg-paper py-4">
+      <div className="grid-12 z-20 gap-y-4 border-b border-rule bg-paper py-4 md:sticky md:top-[var(--header-h)]">
         <div
           role="group"
           aria-label="Filter by category"

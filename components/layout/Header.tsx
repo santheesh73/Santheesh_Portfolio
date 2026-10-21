@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { Clock } from "./Clock";
 import dynamic from "next/dynamic";
@@ -14,15 +14,31 @@ import { ThemeToggle } from "./ThemeToggle";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { cn } from "@/lib/cn";
 
+const NAV = [
+  { href: "/work", label: "Work" },
+  { href: "/about", label: "About" },
+  { href: "/lab", label: "Lab" },
+];
+
 /**
- * Top bar: wordmark left, live IST clock centre, Menu right. Flips to paper
- * text while it sits over any section marked data-tone="ink".
+ * Top bar: wordmark left, live IST clock centre, page links (desktop), theme
+ * and Menu right. Transparent over the top of the page; once scrolled it gets
+ * a solid ground and a hairline so content never runs under the wordmark.
+ * Flips to the ink tone while it sits over any section marked data-tone="ink".
  */
 export function Header({ name, items }: { name: string; items: MenuItem[] }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const bar = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [pathname]);
 
   useGSAP(
     () => {
@@ -48,9 +64,15 @@ export function Header({ name, items }: { name: string; items: MenuItem[] }) {
       <header
         ref={bar}
         className={cn(
-          "grid-12 fixed inset-x-0 top-0 z-[100] h-[var(--header-h)] items-center transition-colors duration-300",
-          dark && !open ? "text-paper" : "text-ink",
-          open && "text-paper",
+          "grid-12 fixed inset-x-0 top-0 z-[100] h-[var(--header-h)] items-center border-b transition-colors duration-300",
+          // over ink surfaces (and the open menu) the bar takes the ink tone; tone-ink keeps it deep in dark mode
+          (dark || open) && "tone-ink",
+          dark || open ? "text-paper" : "text-ink",
+          scrolled && !open
+            ? dark
+              ? "border-paper/15 bg-ink"
+              : "border-rule bg-paper"
+            : "border-transparent bg-transparent",
         )}
       >
         <Link
@@ -68,6 +90,28 @@ export function Header({ name, items }: { name: string; items: MenuItem[] }) {
           <Clock className="opacity-80" />
         </div>
         <div className="col-span-2 flex items-center justify-end gap-5 md:col-span-4 md:gap-8">
+          <nav aria-label="Primary" className="hidden lg:block">
+            <ul className="flex gap-6">
+              {NAV.map((n) => {
+                const current = pathname === n.href || pathname.startsWith(`${n.href}/`);
+                return (
+                  <li key={n.href}>
+                    <Link
+                      href={n.href}
+                      data-transition-label={n.label}
+                      aria-current={current ? "page" : undefined}
+                      className={cn(
+                        "t-label block py-3 underline-offset-[6px] transition-opacity hover:underline",
+                        current ? "underline" : "opacity-70 hover:opacity-100",
+                      )}
+                    >
+                      {n.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
           <ThemeToggle />
           <Magnetic>
             <button

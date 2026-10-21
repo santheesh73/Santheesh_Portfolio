@@ -109,7 +109,7 @@ export function NotFoundField() {
           <p className="t-label text-ink-2">{locked ? "Click the field to go home." : "Scroll or click to compile."}</p>
         </div>
         <div className="pointer-events-auto col-span-full md:col-span-5 md:text-right">
-          <Link href="/" data-transition-label="Index" className="t-label underline decoration-rule underline-offset-4 hover:decoration-ink">
+          <Link href="/" data-transition-label="Index" className="hit t-label underline decoration-rule underline-offset-4 hover:decoration-ink">
             Back to the index →
           </Link>
         </div>

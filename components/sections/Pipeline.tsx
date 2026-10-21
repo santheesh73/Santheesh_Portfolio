@@ -46,7 +46,7 @@ function StageCard({ stage, i, total }: { stage: PipelineStage; i: number; total
             <Link
               href={`/work/${ex.slug}`}
               data-transition-label={ex.project}
-              className="t-label text-ink underline decoration-rule underline-offset-4 hover:decoration-ink"
+              className="hit t-label text-ink underline decoration-rule underline-offset-4 hover:decoration-ink"
             >
               {ex.project} ↗
             </Link>

@@ -359,3 +359,13 @@ html.is-booting {
     transform: scaleY(0);
   }
 }
+
+/* Small text links get a ~40px-tall hit area without changing the layout. */
+.hit {
+  position: relative;
+}
+.hit::after {
+  content: "";
+  position: absolute;
+  inset: -12px -6px;
+}

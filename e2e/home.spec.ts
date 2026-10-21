@@ -5,9 +5,10 @@ test.beforeEach(async ({ context }) => {
 });
 
 test("home renders every section in order, ending in the contact footer", async ({ page }) => {
-  await page.goto("/");
-  const headings = await page.locator("main h2, footer h2").allTextContents();
-  expect(headings.join(" | ")).toMatch(/Work\..*Tools, by layer\..*Public record\..*Let's build something useful\./);
+  await page.goto("/", { waitUntil: "networkidle" });
+  await expect
+    .poll(async () => (await page.locator("main h2, footer h2").allTextContents()).join(" | "))
+    .toMatch(/Work\..*Tools, by layer\..*Public record\..*Let's build something useful\./);
   await expect(page.locator("footer#contact")).toBeAttached();
 });
 

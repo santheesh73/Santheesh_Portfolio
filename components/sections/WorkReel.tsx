@@ -70,7 +70,7 @@ export function WorkReel({
           <p className="max-w-[34ch] text-ink-2">
             Five builds that show the pattern. Each one opens into a case study with its architecture.
           </p>
-          <Link href="/work" className="t-label w-fit underline decoration-rule underline-offset-4 hover:decoration-ink">
+          <Link href="/work" className="hit t-label w-fit underline decoration-rule underline-offset-4 hover:decoration-ink">
             All {totalWork} projects →
           </Link>
         </header>

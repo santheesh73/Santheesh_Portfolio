@@ -29,7 +29,7 @@ function NotFoundFallback() {
           </h1>
         </div>
         <div className="col-span-full md:col-span-5 md:text-right">
-          <Link href="/" className="t-label underline decoration-rule underline-offset-4 hover:decoration-ink">
+          <Link href="/" className="hit t-label underline decoration-rule underline-offset-4 hover:decoration-ink">
             Back to the index →
           </Link>
         </div>

@@ -59,7 +59,7 @@ export function ProgressRail({ bodyId }: { bodyId: string }) {
       <div className="relative pl-5">
         <span aria-hidden="true" className="absolute top-0 bottom-0 left-0 w-px bg-rule" />
         <span aria-hidden="true" data-fill className="absolute top-0 bottom-0 left-0 w-px origin-top scale-y-0 bg-signal" />
-        <ol className="flex flex-col gap-3">
+        <ol className="flex flex-col">
           {items.map((it, i) => (
             <li key={it.id}>
               <a
@@ -71,7 +71,7 @@ export function ProgressRail({ bodyId }: { bodyId: string }) {
                   go(it.id);
                 }}
                 className={
-                  "t-label block transition-colors " + (i === active ? "text-ink" : "text-ink-3-text hover:text-ink")
+                  "t-label block py-1.5 transition-colors " + (i === active ? "text-ink" : "text-ink-3-text hover:text-ink")
                 }
               >
                 <span className="tabular-nums">{String(i + 1).padStart(2, "0")}</span> {it.label}

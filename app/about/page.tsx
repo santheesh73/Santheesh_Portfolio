@@ -60,7 +60,7 @@ export default function Page() {
                     target={f.href.startsWith("http") ? "_blank" : undefined}
                     rel="noreferrer"
                     data-transition="none"
-                    className="underline decoration-rule underline-offset-4 hover:decoration-ink"
+                    className="hit underline decoration-rule underline-offset-4 hover:decoration-ink"
                   >
                     {f.v}
                   </a>
@@ -124,7 +124,7 @@ export default function Page() {
             <p className="font-display text-[clamp(1.5rem,3vw,2.75rem)] leading-tight font-semibold tracking-[-0.025em]">
               {profile.builds.join(" · ")}
             </p>
-            <Link href="/work" className="t-label mt-4 w-fit underline decoration-rule underline-offset-4 hover:decoration-ink">
+            <Link href="/work" className="hit t-label mt-4 w-fit underline decoration-rule underline-offset-4 hover:decoration-ink">
               See the work →
             </Link>
           </div>

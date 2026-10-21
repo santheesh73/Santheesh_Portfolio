@@ -61,7 +61,7 @@ export function Signals({
             target="_blank"
             rel="noreferrer"
             data-cursor="Open ↗"
-            className="t-label underline decoration-rule underline-offset-4 hover:decoration-ink"
+            className="hit t-label underline decoration-rule underline-offset-4 hover:decoration-ink"
           >
             Open GitHub profile ↗
           </a>

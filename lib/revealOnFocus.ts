@@ -24,7 +24,11 @@ export function revealOnFocus(
     const x = el.getBoundingClientRect().left - track.getBoundingClientRect().left;
     const d = distance();
     const p = d > 0 ? Math.min(1, Math.max(0, (x - window.innerWidth * 0.25) / d)) : 0;
-    const y = st.start + p * (st.end - st.start);
+    // measure the start from the pin spacer now: st.start can be stale if layout
+    // shifted (fonts, late sections) since the last refresh
+    const spacer = scene.parentElement?.classList.contains("pin-spacer") ? scene.parentElement : scene;
+    const start = spacer.getBoundingClientRect().top + window.scrollY;
+    const y = start + p * (st.end - st.start);
     const lenis = getLenis();
     if (lenis) lenis.scrollTo(y, { immediate: true });
     else window.scrollTo(0, y);

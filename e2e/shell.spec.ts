@@ -108,3 +108,19 @@ test("theme toggle switches to dark, remembers it, and dark mode has no axe cont
   await page.getByRole("button", { name: /switch to light theme/i }).click();
   await expect(html).toHaveAttribute("data-theme", "light");
 });
+
+test("header turns solid once scrolled, and desktop shows page links", async ({
+  page,
+  isMobile,
+}) => {
+  await page.addInitScript(() => sessionStorage.setItem("ss-booted", "1"));
+  await page.goto("/about", { waitUntil: "networkidle" });
+  const header = page.locator("header").first();
+  await expect(header).toHaveClass(/bg-transparent/);
+  await page.evaluate(() => window.scrollTo(0, 600));
+  await expect(header).toHaveClass(/bg-paper/);
+  const nav = page.getByRole("navigation", { name: "Primary" });
+  if (isMobile) await expect(nav).toBeHidden();
+  else
+    await expect(nav.getByRole("link", { name: "About" })).toHaveAttribute("aria-current", "page");
+});

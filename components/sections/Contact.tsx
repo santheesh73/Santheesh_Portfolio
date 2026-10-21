@@ -59,7 +59,7 @@ export function Contact({ heading, email, github, linkedin, motto, location, hom
             total={home ? homeIndex : undefined}
             text="Contact"
           />
-          <SplitReveal as="h2" id="contact-title" className="t-hero max-w-[12ch] text-balance">
+          <SplitReveal as="h2" id="contact-title" className="max-w-[12ch] font-display text-[clamp(2.75rem,7vw,7.5rem)] leading-[0.9] font-semibold tracking-[-0.04em] text-balance">
             {heading}
           </SplitReveal>
         </div>
@@ -120,7 +120,7 @@ export function Contact({ heading, email, github, linkedin, motto, location, hom
             {location} · <Clock className="text-paper/60" />
           </span>
           <span className="hidden md:inline">Press G for the grid</span>
-          <button type="button" onClick={toTop} className="underline-offset-4 hover:text-paper hover:underline">
+          <button type="button" onClick={toTop} className="hit underline-offset-4 hover:text-paper hover:underline">
             Back to top ↑
           </button>
         </div>

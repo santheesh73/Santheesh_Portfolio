@@ -1,5 +1,6 @@
 "use client";
 
+import { Clock } from "./Clock";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -206,7 +207,9 @@ export function Menu({
         >
           <span className="max-md:hidden">Press G for the blueprint grid</span>
           <span className="max-md:hidden">Esc to close</span>
-          <span className="md:hidden">Tiruppur, India · IST</span>
+          <span className="md:hidden">
+            Tiruppur, India · <Clock className="text-paper/60" />
+          </span>
         </div>
       </div>
     </div>

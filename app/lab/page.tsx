@@ -88,7 +88,7 @@ export default function Page() {
             ))}
           </ol>
           {craft && (
-            <Link href={`/work/${craft.slug}`} className="t-label w-fit underline decoration-paper/30 underline-offset-4 hover:decoration-paper">
+            <Link href={`/work/${craft.slug}`} className="hit t-label w-fit underline decoration-paper/30 underline-offset-4 hover:decoration-paper">
               Frontend Craft case study →
             </Link>
           )}

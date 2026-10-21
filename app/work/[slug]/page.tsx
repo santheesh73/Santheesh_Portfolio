@@ -122,7 +122,7 @@ export default async function CaseStudy({ params }: { params: Promise<{ slug: st
                       target="_blank"
                       rel="noreferrer"
                       data-cursor="Open ↗"
-                      className="underline decoration-rule underline-offset-4 hover:decoration-ink"
+                      className="hit underline decoration-rule underline-offset-4 hover:decoration-ink"
                     >
                       {l.label} ↗
                     </a>

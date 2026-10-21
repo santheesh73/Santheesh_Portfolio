@@ -27,6 +27,7 @@ async function main() {
       viewport: { width: vp.width, height: vp.height },
       isMobile: vp.isMobile,
       hasTouch: vp.isMobile,
+      colorScheme: process.env.COLOR_SCHEME === "dark" ? "dark" : "light",
     });
     await ctx.addInitScript(() => sessionStorage.setItem("ss-booted", "1"));
     const page = await ctx.newPage();

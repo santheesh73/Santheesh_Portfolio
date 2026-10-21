@@ -27,7 +27,7 @@ export default function Page() {
         </p>
         <p data-enter className="t-label col-span-full self-end text-ink-3-text md:col-span-5 md:text-right">
           Smaller experiments live in the{" "}
-          <Link href="/lab" className="text-ink underline decoration-rule underline-offset-4 hover:decoration-ink">
+          <Link href="/lab" className="hit text-ink underline decoration-rule underline-offset-4 hover:decoration-ink">
             Lab ({labProjects.length})
           </Link>
         </p>

@@ -18,7 +18,9 @@ test("/work filters and switches list ↔ grid", async ({ page }) => {
   await expect(items.first()).toHaveCSS("opacity", "1");
 });
 
-test("case study shows meta, section rail and loops to the next project", async ({ page }, info) => {
+test("case study shows meta, section rail and links to the next project without hijacking the scroll", async ({
+  page,
+}, info) => {
   await page.goto("/work/orion");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Orion");
   await expect(page.getByText("Private AI. Zero cloud.", { exact: false }).first()).toBeVisible();
@@ -27,12 +29,15 @@ test("case study shows meta, section rail and loops to the next project", async 
   }
   const next = page.getByRole("region", { name: "Next project" });
   await expect(next.getByRole("link")).toHaveAttribute("href", "/work/frontend-craft");
-  // scrolling through the next-project section fires the transition
-  await next.scrollIntoViewIfNeeded();
-  for (let i = 0; i < 40 && !page.url().endsWith("/work/frontend-craft"); i++) {
+  // scrolling past it reaches the contact footer (no automatic jump); the title link goes next
+  for (let i = 0; i < 60; i++) {
     await page.mouse.wheel(0, 600);
-    await page.waitForTimeout(80);
+    await page.waitForTimeout(60);
   }
+  await expect(page.locator("footer#contact")).toBeInViewport();
+  await expect(page).toHaveURL(/\/work\/orion$/);
+  await next.scrollIntoViewIfNeeded();
+  await next.getByRole("link").click();
   await expect(page).toHaveURL(/\/work\/frontend-craft$/, { timeout: 5000 });
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Frontend Craft");
 });
